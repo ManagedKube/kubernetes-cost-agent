@@ -8,17 +8,6 @@ import (
 	"managedkube.com/kube-cost-agent/pkg/node"
 )
 
-type PodCost struct {
-	MinuteMemory float64
-	HourMemory   float64
-	DayMemory    float64
-	MonthMemory  float64
-	MinuteCpu    float64
-	HourCpu      float64
-	DayCpu       float64
-	MonthCpu     float64
-}
-
 func CalculatePodCost(node node.NodeInfo, podUsageMemory int64, podUsageCpu int64) PodCost {
 
 	cost := PodCost{}

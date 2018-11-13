@@ -32,8 +32,6 @@ func main() {
 	flag.Set("v", "3")
 	flag.Parse()
 
-	cost.Hello()
-
 	config, err := getConfig(*kubeconfig)
 	if err != nil {
 		glog.Errorf("Failed to load client config: %v", err)
