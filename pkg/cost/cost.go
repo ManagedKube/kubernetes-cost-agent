@@ -1,7 +1,6 @@
 package cost
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/golang/glog"
@@ -18,10 +17,6 @@ type PodCost struct {
 	HourCpu      float64
 	DayCpu       float64
 	MonthCpu     float64
-}
-
-func Hello() {
-	fmt.Println("Hello there")
 }
 
 func CalculatePodCost(node node.NodeInfo, podUsageMemory int64, podUsageCpu int64) PodCost {
