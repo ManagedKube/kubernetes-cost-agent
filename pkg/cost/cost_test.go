@@ -53,6 +53,24 @@ func TestCalculatePodCost(t *testing.T) {
 			HourCpu:      0.095000,
 			DayCpu:       2.280000,
 			MonthCpu:     68.400000},
+	}, {
+		node: node.NodeInfo{
+			Name:               "three",
+			CpuCapacity:        1000,
+			MemoryCapacity:     3885420544,
+			ComputeCostPerHour: 0.0475,
+		},
+		podUsageMemory: 4194304000,
+		podUsageCpu:    4000,
+		podCost: PodCost{
+			MinuteMemory: 0.000427,
+			HourMemory:   0.025638,
+			DayMemory:    0.615314,
+			MonthMemory:  18.459417,
+			MinuteCpu:    0.001583,
+			HourCpu:      0.095000,
+			DayCpu:       2.280000,
+			MonthCpu:     68.400000},
 	}}
 
 	for _, v := range testVars {
@@ -62,28 +80,28 @@ func TestCalculatePodCost(t *testing.T) {
 		want := v.podCost
 
 		if strconv.FormatFloat(got.MinuteMemory, 'f', 6, 64) != strconv.FormatFloat(want.MinuteMemory, 'f', 6, 64) {
-			t.Errorf("got %.g, want %.g", got.MinuteMemory, want.MinuteMemory)
+			t.Errorf("test: %s - got %.g, want %.g", v.node.Name, got.MinuteMemory, want.MinuteMemory)
 		}
 		if strconv.FormatFloat(got.HourMemory, 'f', 6, 64) != strconv.FormatFloat(want.HourMemory, 'f', 6, 64) {
-			t.Errorf("got %.g, want %.g", got.HourMemory, want.HourMemory)
+			t.Errorf("test: %s - got %.g, want %.g", v.node.Name, got.HourMemory, want.HourMemory)
 		}
 		if strconv.FormatFloat(got.DayMemory, 'f', 6, 64) != strconv.FormatFloat(want.DayMemory, 'f', 6, 64) {
-			t.Errorf("got %.g, want %.g", got.DayMemory, want.DayMemory)
+			t.Errorf("test: %.s - got %.g, want %.g", v.node.Name, got.DayMemory, want.DayMemory)
 		}
 		if strconv.FormatFloat(got.MonthMemory, 'f', 6, 64) != strconv.FormatFloat(want.MonthMemory, 'f', 6, 64) {
-			t.Errorf("got %.g, want %.g", got.MonthMemory, want.MonthMemory)
+			t.Errorf("test: %s - got %.g, want %.g", v.node.Name, got.MonthMemory, want.MonthMemory)
 		}
 		if strconv.FormatFloat(got.MinuteCpu, 'f', 6, 64) != strconv.FormatFloat(want.MinuteCpu, 'f', 6, 64) {
-			t.Errorf("got %.g, want %.g", got.MinuteCpu, want.MinuteCpu)
+			t.Errorf("test: %s - got %.g, want %.g", v.node.Name, got.MinuteCpu, want.MinuteCpu)
 		}
 		if strconv.FormatFloat(got.HourCpu, 'f', 6, 64) != strconv.FormatFloat(want.HourCpu, 'f', 6, 64) {
-			t.Errorf("got %.g, want %.g", got.HourCpu, want.HourCpu)
+			t.Errorf("test: %s - got %.g, want %.g", v.node.Name, got.HourCpu, want.HourCpu)
 		}
 		if strconv.FormatFloat(got.DayCpu, 'f', 6, 64) != strconv.FormatFloat(want.DayCpu, 'f', 6, 64) {
-			t.Errorf("got %.g, want %.g", got.DayCpu, want.DayCpu)
+			t.Errorf("test: %s - got %.g, want %.g", v.node.Name, got.DayCpu, want.DayCpu)
 		}
 		if strconv.FormatFloat(got.MonthCpu, 'f', 6, 64) != strconv.FormatFloat(want.MonthCpu, 'f', 6, 64) {
-			t.Errorf("got %.g, want %.g", got.MonthCpu, want.MonthCpu)
+			t.Errorf("test: %s - got %.g, want %.g", v.node.Name, got.MonthCpu, want.MonthCpu)
 		}
 	}
 }
