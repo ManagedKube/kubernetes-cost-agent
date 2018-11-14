@@ -16,6 +16,12 @@ go run main.go --kubeconfig ~/.kube/config
 go build .
 '''
 
+### Test
+
+```
+go test ./...
+```
+
 ## Metrics
 
 ```
@@ -29,3 +35,7 @@ docker build gcr.io/managedkube/kubernetes-cost-attribution/agent:dev
 
 docker push gcr.io/managedkube/kubernetes-cost-attribution/agent:dev
 ```
+
+# Install Golang
+
+https://golang.org/doc/install#install
