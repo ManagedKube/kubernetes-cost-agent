@@ -5,18 +5,16 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
-	"reflect"
 	"strconv"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"managedkube.com/kube-cost-agent/pkg/cost"
-	"managedkube.com/kube-cost-agent/pkg/node"
+	k8sNode "managedkube.com/kube-cost-agent/pkg/metrics/k8s/node"
+	k8sPod "managedkube.com/kube-cost-agent/pkg/metrics/k8s/pod"
 
 	"github.com/golang/glog"
-	"k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
@@ -45,11 +43,11 @@ func main() {
 		return
 	}
 
-	nodes, err := getAllNodes(clientset)
-
-	for _, n := range nodes.Items {
-		glog.V(3).Infof("Found nodes: %s/%s", n.Name, n.UID)
-	}
+	// nodes, err := getAllNodes(clientset)
+	//
+	// for _, n := range nodes.Items {
+	// 	glog.V(3).Infof("Found nodes: %s/%s", n.Name, n.UID)
+	// }
 
 	//recordMetrics()
 	go update(clientset)
@@ -66,42 +64,17 @@ func getConfig(kubeconfig string) (*rest.Config, error) {
 	return rest.InClusterConfig()
 }
 
-func getAllNodes(clientset *kubernetes.Clientset) (*v1.NodeList, error) {
-
-	// list nodes
-	nodes, err := clientset.CoreV1().Nodes().List(metav1.ListOptions{})
-	if err != nil {
-		glog.Errorf("Failed to retrieve nodes: %v", err)
-		return nil, err
-	}
-
-	return nodes, nil
-}
-
-func getAllPods(clientset *kubernetes.Clientset) (*v1.PodList, error) {
-
-	//fmt.Println(reflect.TypeOf(clientset))
-
-	// setup list options
-	listOptions := metav1.ListOptions{
-		LabelSelector: "",
-		FieldSelector: "",
-	}
-
-	// list pods
-	pods, err := clientset.CoreV1().Pods("").List(listOptions)
-	if err != nil {
-		glog.Errorf("Failed to retrieve pods: %v", err)
-		return nil, err
-	}
-
-	//fmt.Print(pods.Items[0])
-	//fmt.Printf("%+v\n", pods)
-
-	//fmt.Println(reflect.TypeOf(pods))
-
-	return pods, nil
-}
+// func getAllNodes(clientset *kubernetes.Clientset) (*v1.NodeList, error) {
+//
+// 	// list nodes
+// 	nodes, err := clientset.CoreV1().Nodes().List(metav1.ListOptions{})
+// 	if err != nil {
+// 		glog.Errorf("Failed to retrieve nodes: %v", err)
+// 		return nil, err
+// 	}
+//
+// 	return nodes, nil
+// }
 
 func PrettyPrint(v interface{}) (err error) {
 	b, err := json.MarshalIndent(v, "", "  ")
@@ -117,33 +90,15 @@ func update(clientset *kubernetes.Clientset) {
 	// divisor = resource.MustParse("1")
 
 	namespaceCostMap := make(map[string]float64)
-	var nodeList node.NodeList
+	//var nodeList k8sNode.NodeList
 	var podMetricList podMetricList
 
 	for {
 
-		nodes, err := getAllNodes(clientset)
+		nodeList, err := k8sNode.AllNodes(clientset)
 		if err != nil {
 			glog.Errorf("Failed to retrieve nodes: %v", err)
 			return
-		}
-
-		fmt.Println(reflect.TypeOf(nodes))
-
-		for _, n := range nodes.Items {
-			//PrettyPrint(n.Status.Capacity)
-			glog.V(3).Infof("Found nodes: %s/%s", n.Name, n.UID)
-
-			var node node.NodeInfo
-			node.Name = n.Name
-			node.CpuCapacity = n.Status.Capacity.Cpu().MilliValue()
-			node.MemoryCapacity = n.Status.Capacity.Memory().Value()
-			node.ComputeCostPerHour = 0.0475
-
-			glog.V(3).Infof("Node CPU Capacity: %s", strconv.FormatInt(node.CpuCapacity, 10))
-			glog.V(3).Infof("Node Memory Capacity: %s", strconv.FormatInt(node.MemoryCapacity, 10))
-
-			nodeList.Node = append(nodeList.Node, node)
 		}
 
 		fmt.Println("nodeList.Node")
@@ -151,7 +106,7 @@ func update(clientset *kubernetes.Clientset) {
 			fmt.Println(n)
 		}
 
-		pods, err := getAllPods(clientset)
+		pods, err := k8sPod.GetAllPods(clientset)
 		if err != nil {
 			glog.Errorf("Failed to retrieve pods: %v", err)
 			return
@@ -167,6 +122,7 @@ func update(clientset *kubernetes.Clientset) {
 			podCostMetric.With(prometheus.Labels{"namespace_name": p.namespace_name, "pod_name": p.pod_name, "container_name": p.container_name, "duration": "month"}).Set(0)
 		}
 
+		// loop through each pod and calculate the cost
 		for _, p := range pods.Items {
 			if p.Status.Phase == "Running" {
 				//PrettyPrint(p)
@@ -198,7 +154,7 @@ func update(clientset *kubernetes.Clientset) {
 
 					//fmt.Println(reflect.TypeOf(cpuLimit))
 
-					nodeInfo, err := getNodeInfo(nodeList, p.Spec.NodeName)
+					nodeInfo, err := k8sNode.GetNodeInfo(nodeList, p.Spec.NodeName)
 					if err != nil {
 						glog.Errorf("Failed to retrieve nodes: %v", err)
 						return
@@ -246,30 +202,6 @@ func update(clientset *kubernetes.Clientset) {
 	}
 }
 
-// // https://github.com/kubernetes/kubernetes/blob/master/pkg/api/resource/helpers.go
-// // convertResourceCPUToInt converts cpu value to the format of divisor and returns
-// // ceiling of the value.
-// func convertResourceCPUToInt(cpu *resource.Quantity, divisor resource.Quantity) (int64, error) {
-// 	c := int64(math.Ceil(float64(cpu.MilliValue()) / float64(divisor.MilliValue())))
-// 	//b := float64(math.Ceil(float64(cpu.Value()) / float64(divisor.Value())))
-// 	fmt.Println(cpu.MilliValue())
-// 	return c, nil
-// }
-//
-// // convertResourceMemoryToInt converts memory value to the format of divisor and returns
-// // ceiling of the value.
-// func convertResourceMemoryToInt(memory *resource.Quantity, divisor resource.Quantity) (int64, error) {
-// 	m := int64(math.Ceil(float64(memory.Value()) / float64(divisor.Value())))
-// 	return m, nil
-// }
-//
-// // convertResourceEphemeralStorageToInt converts ephemeral storage value to the format of divisor and returns
-// // ceiling of the value.
-// func convertResourceEphemeralStorageToInt(ephemeralStorage *resource.Quantity, divisor resource.Quantity) (int64, error) {
-// 	m := int64(math.Ceil(float64(ephemeralStorage.Value()) / float64(divisor.Value())))
-// 	return m, nil
-// }
-
 func recordMetrics() {
 	go func() {
 		for {
@@ -291,19 +223,6 @@ type podMetric struct {
 
 type podMetricList struct {
 	pod []podMetric
-}
-
-func getNodeInfo(nodes node.NodeList, nodeName string) (node.NodeInfo, error) {
-
-	info := node.NodeInfo{}
-
-	for _, n := range nodes.Node {
-		if n.Name == nodeName {
-			info = n
-		}
-	}
-
-	return info, nil
 }
 
 var (

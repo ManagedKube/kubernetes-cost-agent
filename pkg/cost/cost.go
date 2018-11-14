@@ -4,11 +4,10 @@ import (
 	"strconv"
 
 	"github.com/golang/glog"
-
-	"managedkube.com/kube-cost-agent/pkg/node"
+	k8sNode "managedkube.com/kube-cost-agent/pkg/metrics/k8s/node"
 )
 
-func CalculatePodCost(node node.NodeInfo, podUsageMemory int64, podUsageCpu int64) PodCost {
+func CalculatePodCost(node k8sNode.NodeInfo, podUsageMemory int64, podUsageCpu int64) PodCost {
 
 	cost := PodCost{}
 

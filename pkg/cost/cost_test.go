@@ -4,20 +4,20 @@ import (
 	"strconv"
 	"testing"
 
-	"managedkube.com/kube-cost-agent/pkg/node"
+	k8sNode "managedkube.com/kube-cost-agent/pkg/metrics/k8s/node"
 )
 
 func TestCalculatePodCost(t *testing.T) {
 
 	type testFields struct {
-		node           node.NodeInfo
+		node           k8sNode.NodeInfo
 		podUsageMemory int64
 		podUsageCpu    int64
 		podCost        PodCost
 	}
 
 	testVars := []testFields{{
-		node: node.NodeInfo{
+		node: k8sNode.NodeInfo{
 			Name:               "one",
 			CpuCapacity:        1000,
 			MemoryCapacity:     3885420544,
@@ -36,7 +36,7 @@ func TestCalculatePodCost(t *testing.T) {
 			MonthCpu:     68.400000,
 		},
 	}, {
-		node: node.NodeInfo{
+		node: k8sNode.NodeInfo{
 			Name:               "two",
 			CpuCapacity:        1000,
 			MemoryCapacity:     3885420544,
@@ -54,7 +54,7 @@ func TestCalculatePodCost(t *testing.T) {
 			DayCpu:       2.280000,
 			MonthCpu:     68.400000},
 	}, {
-		node: node.NodeInfo{
+		node: k8sNode.NodeInfo{
 			Name:               "three",
 			CpuCapacity:        1000,
 			MemoryCapacity:     3885420544,
@@ -72,7 +72,7 @@ func TestCalculatePodCost(t *testing.T) {
 			DayCpu:       2.280000,
 			MonthCpu:     68.400000},
 	}, {
-		node: node.NodeInfo{
+		node: k8sNode.NodeInfo{
 			Name:               "four",
 			CpuCapacity:        1000,
 			MemoryCapacity:     3885420544,
