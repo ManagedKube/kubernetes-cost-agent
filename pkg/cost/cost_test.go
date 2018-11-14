@@ -71,6 +71,24 @@ func TestCalculatePodCost(t *testing.T) {
 			HourCpu:      0.095000,
 			DayCpu:       2.280000,
 			MonthCpu:     68.400000},
+	}, {
+		node: node.NodeInfo{
+			Name:               "four",
+			CpuCapacity:        1000,
+			MemoryCapacity:     3885420544,
+			ComputeCostPerHour: 0.0475,
+		},
+		podUsageMemory: 524288000,
+		podUsageCpu:    500,
+		podCost: PodCost{
+			MinuteMemory: 0.000053,
+			HourMemory:   0.003205,
+			DayMemory:    0.076914,
+			MonthMemory:  2.307427,
+			MinuteCpu:    0.000198,
+			HourCpu:      0.011875,
+			DayCpu:       0.285000,
+			MonthCpu:     8.550000},
 	}}
 
 	for _, v := range testVars {
