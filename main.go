@@ -11,6 +11,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"managedkube.com/kube-cost-agent/pkg/cost"
+	"managedkube.com/kube-cost-agent/pkg/export"
 	k8sNode "managedkube.com/kube-cost-agent/pkg/metrics/k8s/node"
 	k8sPod "managedkube.com/kube-cost-agent/pkg/metrics/k8s/pod"
 
@@ -43,13 +44,8 @@ func main() {
 		return
 	}
 
-	// nodes, err := getAllNodes(clientset)
-	//
-	// for _, n := range nodes.Items {
-	// 	glog.V(3).Infof("Found nodes: %s/%s", n.Name, n.UID)
-	// }
+	export.Register()
 
-	//recordMetrics()
 	go update(clientset)
 
 	http.Handle("/metrics", promhttp.Handler())
@@ -64,18 +60,6 @@ func getConfig(kubeconfig string) (*rest.Config, error) {
 	return rest.InClusterConfig()
 }
 
-// func getAllNodes(clientset *kubernetes.Clientset) (*v1.NodeList, error) {
-//
-// 	// list nodes
-// 	nodes, err := clientset.CoreV1().Nodes().List(metav1.ListOptions{})
-// 	if err != nil {
-// 		glog.Errorf("Failed to retrieve nodes: %v", err)
-// 		return nil, err
-// 	}
-//
-// 	return nodes, nil
-// }
-
 func PrettyPrint(v interface{}) (err error) {
 	b, err := json.MarshalIndent(v, "", "  ")
 	if err == nil {
@@ -86,12 +70,8 @@ func PrettyPrint(v interface{}) (err error) {
 
 func update(clientset *kubernetes.Clientset) {
 
-	// divisor := resource.Quantity{}
-	// divisor = resource.MustParse("1")
-
 	namespaceCostMap := make(map[string]float64)
-	//var nodeList k8sNode.NodeList
-	var podMetricList podMetricList
+	var podMetricList k8sPod.PodMetricList
 
 	for {
 
@@ -113,34 +93,26 @@ func update(clientset *kubernetes.Clientset) {
 		}
 
 		// Reset pod metrics counters
-		// Would prefer to remove the metrics when it goes to zero.  Havent found a way to do that with
+		// TODO: Would prefer to remove the metrics when it goes to zero.  Havent found a way to do that with
 		// the prometheus libs
-		for _, p := range podMetricList.pod {
-			podCostMetric.With(prometheus.Labels{"namespace_name": p.namespace_name, "pod_name": p.pod_name, "container_name": p.container_name, "duration": "minute"}).Set(0)
-			podCostMetric.With(prometheus.Labels{"namespace_name": p.namespace_name, "pod_name": p.pod_name, "container_name": p.container_name, "duration": "hour"}).Set(0)
-			podCostMetric.With(prometheus.Labels{"namespace_name": p.namespace_name, "pod_name": p.pod_name, "container_name": p.container_name, "duration": "day"}).Set(0)
-			podCostMetric.With(prometheus.Labels{"namespace_name": p.namespace_name, "pod_name": p.pod_name, "container_name": p.container_name, "duration": "month"}).Set(0)
+		for _, p := range podMetricList.Pod {
+			export.PodCostMetric.With(prometheus.Labels{"namespace_name": p.Namespace_name, "pod_name": p.Pod_name, "container_name": p.Container_name, "duration": "minute"}).Set(0)
+			export.PodCostMetric.With(prometheus.Labels{"namespace_name": p.Namespace_name, "pod_name": p.Pod_name, "container_name": p.Container_name, "duration": "hour"}).Set(0)
+			export.PodCostMetric.With(prometheus.Labels{"namespace_name": p.Namespace_name, "pod_name": p.Pod_name, "container_name": p.Container_name, "duration": "day"}).Set(0)
+			export.PodCostMetric.With(prometheus.Labels{"namespace_name": p.Namespace_name, "pod_name": p.Pod_name, "container_name": p.Container_name, "duration": "month"}).Set(0)
 		}
+
+		//fmt.Println(reflect.TypeOf(pods.Items))
 
 		// loop through each pod and calculate the cost
 		for _, p := range pods.Items {
 			if p.Status.Phase == "Running" {
 				//PrettyPrint(p)
-				//fmt.Println(reflect.TypeOf(p.Spec.Containers))
+				//fmt.Println(reflect.TypeOf(p))
 				glog.V(3).Infof("Found pods: %s/%s/%s/%s", p.Namespace, p.Name, p.UID, p.Spec.NodeName)
 
 				for _, c := range p.Spec.Containers {
 					glog.V(3).Infof("Found container: %s", c.Name)
-					//fmt.Println(reflect.TypeOf(c.Resources.Limits.Memory))
-					//fmt.Println(reflect.TypeOf(c))
-					//PrettyPrint(c.Resources.Limits)
-					//fmt.Println(c.Resources.Limits.Memory.Value())
-					// for k, l := range c.Resources.Limits {
-					// 	fmt.Println(k)
-					// 	fmt.Println(l)
-					// 	// PrettyPrint(k)
-					// 	// PrettyPrint(l)
-					// }
 
 					var cpuLimit int64 = c.Resources.Limits.Cpu().MilliValue()
 					var cpuRequest int64 = c.Resources.Requests.Cpu().MilliValue()
@@ -163,20 +135,16 @@ func update(clientset *kubernetes.Clientset) {
 					var podUsageMemory int64 = memoryLimit
 					var podUsageCpu int64 = cpuLimit
 
-					//cost := calculatePodCost(nodeInfo, podUsageMemory, podUsageCpu)
 					podCost := cost.CalculatePodCost(nodeInfo, podUsageMemory, podUsageCpu)
 
-					podCostMetric.With(prometheus.Labels{"namespace_name": p.Namespace, "pod_name": p.Name, "container_name": c.Name, "duration": "minute"}).Set(podCost.MinuteCpu + podCost.MinuteMemory)
-					podCostMetric.With(prometheus.Labels{"namespace_name": p.Namespace, "pod_name": p.Name, "container_name": c.Name, "duration": "hour"}).Set(podCost.HourCpu + podCost.HourMemory)
-					podCostMetric.With(prometheus.Labels{"namespace_name": p.Namespace, "pod_name": p.Name, "container_name": c.Name, "duration": "day"}).Set(podCost.DayCpu + podCost.DayMemory)
-					podCostMetric.With(prometheus.Labels{"namespace_name": p.Namespace, "pod_name": p.Name, "container_name": c.Name, "duration": "month"}).Set(podCost.MonthCpu + podCost.MonthMemory)
+					export.Pods(podCost, p, c.Name)
 
-					var metric podMetric
-					metric.namespace_name = p.Namespace
-					metric.pod_name = p.Name
-					metric.container_name = c.Name
+					var metric k8sPod.PodMetric
+					metric.Namespace_name = p.Namespace
+					metric.Pod_name = p.Name
+					metric.Container_name = c.Name
 
-					podMetricList.pod = append(podMetricList.pod, metric)
+					podMetricList.Pod = append(podMetricList.Pod, metric)
 
 					// Add this pod to the total
 					namespaceCostMap[p.Namespace] += podCost.MinuteCpu + podCost.MinuteMemory
@@ -185,14 +153,10 @@ func update(clientset *kubernetes.Clientset) {
 
 		}
 
-		// hdFailures.With(prometheus.Labels{"device": "/dev/sda"}).Inc()
-		// namespaceCost.With(prometheus.Labels{"namespace_name": "foo", "duration": "bar"}).Set(4.2)
-		// namespaceCost.With(prometheus.Labels{"namespace_name": "foo2", "duration": "bar"}).Set(5.2)
-
 		for k, ns := range namespaceCostMap {
 			// fmt.Println(k)
 			// fmt.Println(strconv.FormatFloat(ns, 'f', 6, 64))
-			namespaceCost.With(prometheus.Labels{"namespace_name": k, "duration": "minute"}).Set(ns)
+			export.NamespaceCost.With(prometheus.Labels{"namespace_name": k, "duration": "minute"}).Set(ns)
 
 			// reset counter
 			namespaceCostMap[k] = 0
@@ -200,67 +164,4 @@ func update(clientset *kubernetes.Clientset) {
 
 		time.Sleep(60 * time.Second)
 	}
-}
-
-func recordMetrics() {
-	go func() {
-		for {
-			cpuTemp.Set(65.3)
-			hdFailures.With(prometheus.Labels{"device": "/dev/sda"}).Inc()
-			namespaceCost.With(prometheus.Labels{"namespace_name": "foo", "duration": "bar"}).Set(4.2)
-			namespaceCost.With(prometheus.Labels{"namespace_name": "foo2", "duration": "bar"}).Set(5.2)
-			time.Sleep(2 * time.Second)
-		}
-	}()
-}
-
-type podMetric struct {
-	namespace_name string
-	pod_name       string
-	container_name string
-	duration       string
-}
-
-type podMetricList struct {
-	pod []podMetric
-}
-
-var (
-	cpuTemp = prometheus.NewGauge(prometheus.GaugeOpts{
-		Name: "cpu_temperature_celsius",
-		Help: "Current temperature of the CPU.",
-	})
-	hdFailures = prometheus.NewCounterVec(prometheus.CounterOpts{
-		Name: "hd_errors_total",
-		Help: "Number of hard-disk errors.",
-	},
-		[]string{"device"},
-	)
-	namespaceCost = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "mk_namespace_cost",
-		Help: "ManagedKube - The cost of the namespace.",
-	},
-		[]string{"namespace_name", "duration"},
-	)
-	podCostMetric = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "mk_pod_cost",
-		Help: "ManagedKube - The cost of the pod.",
-	},
-		[]string{"namespace_name", "pod_name", "container_name", "duration"},
-	)
-	totalNumberOfPods = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "mk_total_number_of_pods",
-		Help: "ManagedKube - The total number of running pods.",
-	},
-		[]string{"namespace_name"},
-	)
-)
-
-func init() {
-	// Metrics have to be registered to be exposed:
-	prometheus.MustRegister(cpuTemp)
-	prometheus.MustRegister(hdFailures)
-	prometheus.MustRegister(namespaceCost)
-	prometheus.MustRegister(podCostMetric)
-	prometheus.MustRegister(totalNumberOfPods)
 }
