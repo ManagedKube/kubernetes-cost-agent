@@ -31,7 +31,7 @@ curl http://localhost:9101/metrics
 # Docker build
 
 ```
-docker build gcr.io/managedkube/kubernetes-cost-attribution/agent:dev
+docker build -t gcr.io/managedkube/kubernetes-cost-attribution/agent:dev .
 
 docker push gcr.io/managedkube/kubernetes-cost-attribution/agent:dev
 ```
