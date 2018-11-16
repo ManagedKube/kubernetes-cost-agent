@@ -1,7 +1,7 @@
 FROM golang:1.11.0-stretch as builder
 
-COPY . $GOPATH/src/managedkube/agent/
-WORKDIR $GOPATH/src/managedkube/agent/
+COPY . $GOPATH/src/managedkube.com/kube-cost-agent/
+WORKDIR $GOPATH/src/managedkube.com/kube-cost-agent/
 
 # get dependancies
 RUN go get -d -v
