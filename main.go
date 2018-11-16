@@ -95,12 +95,12 @@ func update(clientset *kubernetes.Clientset) {
 		// Reset pod metrics counters
 		// TODO: Would prefer to remove the metrics when it goes to zero.  Havent found a way to do that with
 		// the prometheus libs
-		for _, p := range podMetricList.Pod {
-			export.PodCostMetric.With(prometheus.Labels{"namespace_name": p.Namespace_name, "pod_name": p.Pod_name, "container_name": p.Container_name, "duration": "minute"}).Set(0)
-			export.PodCostMetric.With(prometheus.Labels{"namespace_name": p.Namespace_name, "pod_name": p.Pod_name, "container_name": p.Container_name, "duration": "hour"}).Set(0)
-			export.PodCostMetric.With(prometheus.Labels{"namespace_name": p.Namespace_name, "pod_name": p.Pod_name, "container_name": p.Container_name, "duration": "day"}).Set(0)
-			export.PodCostMetric.With(prometheus.Labels{"namespace_name": p.Namespace_name, "pod_name": p.Pod_name, "container_name": p.Container_name, "duration": "month"}).Set(0)
-		}
+		// for _, p := range podMetricList.Pod {
+		// 	export.PodCostMetric.With(prometheus.Labels{"namespace_name": p.Namespace_name, "pod_name": p.Pod_name, "container_name": p.Container_name, "duration": "minute"}).Set(0)
+		// 	export.PodCostMetric.With(prometheus.Labels{"namespace_name": p.Namespace_name, "pod_name": p.Pod_name, "container_name": p.Container_name, "duration": "hour"}).Set(0)
+		// 	export.PodCostMetric.With(prometheus.Labels{"namespace_name": p.Namespace_name, "pod_name": p.Pod_name, "container_name": p.Container_name, "duration": "day"}).Set(0)
+		// 	export.PodCostMetric.With(prometheus.Labels{"namespace_name": p.Namespace_name, "pod_name": p.Pod_name, "container_name": p.Container_name, "duration": "month"}).Set(0)
+		// }
 
 		//fmt.Println(reflect.TypeOf(pods.Items))
 
@@ -156,7 +156,7 @@ func update(clientset *kubernetes.Clientset) {
 		for k, ns := range namespaceCostMap {
 			// fmt.Println(k)
 			// fmt.Println(strconv.FormatFloat(ns, 'f', 6, 64))
-			export.NamespaceCost.With(prometheus.Labels{"namespace_name": k, "duration": "minute"}).Set(ns)
+			export.NamespaceCost.With(prometheus.Labels{"namespace_name": k, "duration": "minute"}).Add(ns)
 
 			// reset counter
 			namespaceCostMap[k] = 0

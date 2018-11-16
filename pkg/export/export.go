@@ -8,13 +8,13 @@ import (
 )
 
 var (
-	NamespaceCost = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+	NamespaceCost = prometheus.NewCounterVec(prometheus.CounterOpts{
 		Name: "mk_namespace_cost",
 		Help: "ManagedKube - Cost of the namespace.",
 	},
 		[]string{"namespace_name", "duration"},
 	)
-	PodCostMetric = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+	PodCostMetric = prometheus.NewCounterVec(prometheus.CounterOpts{
 		Name: "mk_pod_cost",
 		Help: "ManagedKube - Cost of the pod.",
 	},
@@ -43,10 +43,10 @@ func Pods(podCost cost.PodCost, pod v1.Pod, containerName string) {
 
 func updatePodsPrometheus(podCost cost.PodCost, pod v1.Pod, containerName string) {
 
-	PodCostMetric.With(prometheus.Labels{"namespace_name": pod.Namespace, "pod_name": pod.Name, "container_name": containerName, "duration": "minute"}).Set(podCost.MinuteCpu + podCost.MinuteMemory)
-	PodCostMetric.With(prometheus.Labels{"namespace_name": pod.Namespace, "pod_name": pod.Name, "container_name": containerName, "duration": "hour"}).Set(podCost.HourCpu + podCost.HourMemory)
-	PodCostMetric.With(prometheus.Labels{"namespace_name": pod.Namespace, "pod_name": pod.Name, "container_name": containerName, "duration": "day"}).Set(podCost.DayCpu + podCost.DayMemory)
-	PodCostMetric.With(prometheus.Labels{"namespace_name": pod.Namespace, "pod_name": pod.Name, "container_name": containerName, "duration": "month"}).Set(podCost.MonthCpu + podCost.MonthMemory)
+	PodCostMetric.With(prometheus.Labels{"namespace_name": pod.Namespace, "pod_name": pod.Name, "container_name": containerName, "duration": "minute"}).Add(podCost.MinuteCpu + podCost.MinuteMemory)
+	PodCostMetric.With(prometheus.Labels{"namespace_name": pod.Namespace, "pod_name": pod.Name, "container_name": containerName, "duration": "hour"}).Add(podCost.HourCpu + podCost.HourMemory)
+	PodCostMetric.With(prometheus.Labels{"namespace_name": pod.Namespace, "pod_name": pod.Name, "container_name": containerName, "duration": "day"}).Add(podCost.DayCpu + podCost.DayMemory)
+	PodCostMetric.With(prometheus.Labels{"namespace_name": pod.Namespace, "pod_name": pod.Name, "container_name": containerName, "duration": "month"}).Add(podCost.MonthCpu + podCost.MonthMemory)
 }
 
 func resetPodsPrometheus(k8sPod.PodMetricList) {
