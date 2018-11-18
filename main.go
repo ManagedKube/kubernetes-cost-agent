@@ -80,11 +80,6 @@ func update(clientset *kubernetes.Clientset) {
 			return
 		}
 
-		fmt.Println("nodeList.Node")
-		for _, n := range nodeList.Node {
-			fmt.Println(n)
-		}
-
 		pods, err := k8sPod.GetAllPods(clientset)
 		if err != nil {
 			glog.Errorf("Failed to retrieve pods: %v", err)
