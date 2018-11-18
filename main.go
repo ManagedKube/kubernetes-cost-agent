@@ -8,14 +8,13 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"managedkube.com/kube-cost-agent/pkg/cost"
 	"managedkube.com/kube-cost-agent/pkg/export"
 	k8sNode "managedkube.com/kube-cost-agent/pkg/metrics/k8s/node"
 	k8sPod "managedkube.com/kube-cost-agent/pkg/metrics/k8s/pod"
 
 	"github.com/golang/glog"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
@@ -183,9 +182,7 @@ func update(clientset *kubernetes.Clientset) {
 		}
 
 		for k, ns := range namespaceCostMap {
-			// fmt.Println(k)
-			// fmt.Println(strconv.FormatFloat(ns, 'f', 6, 64))
-			export.NamespaceCost.With(prometheus.Labels{"namespace_name": k, "duration": "minute"}).Add(ns)
+			export.Namespace(k, "minute", ns)
 
 			// reset counter
 			namespaceCostMap[k] = 0

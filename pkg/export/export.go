@@ -41,6 +41,11 @@ func Pods(podCost cost.PodCost, pod v1.Pod, containerName string) {
 	updatePodsPrometheus(podCost, pod, containerName)
 }
 
+// Update the namespace metric
+func Namespace(namespaceName string, duration string, cost float64) {
+	updateNamespacePrometheus(namespaceName, duration, cost)
+}
+
 // Updates the prometheus metric with the new values
 func updatePodsPrometheus(podCost cost.PodCost, pod v1.Pod, containerName string) {
 
@@ -51,6 +56,10 @@ func updatePodsPrometheus(podCost cost.PodCost, pod v1.Pod, containerName string
 func RemovePodPrometheus(pod k8sPod.PodMetric) {
 
 	PodCostMetric.Delete(prometheus.Labels{"namespace_name": pod.Namespace_name, "pod_name": pod.Pod_name, "container_name": pod.Container_name, "duration": pod.Duration})
+}
+
+func updateNamespacePrometheus(namespaceName string, duration string, cost float64) {
+	NamespaceCost.With(prometheus.Labels{"namespace_name": namespaceName, "duration": duration}).Add(cost)
 }
 
 func Send() {
