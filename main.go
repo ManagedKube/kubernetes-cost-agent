@@ -108,9 +108,6 @@ func update(clientset *kubernetes.Clientset) {
 			}
 
 			if !didFindPod {
-				// remove this pod
-				glog.V(3).Infof("xxxxxxxxxxxxx Removing pod from the export list: %s", pm.Pod_name)
-
 				// Remove this entry to the remove pod list
 				prunePodMetricList.Pod = append(prunePodMetricList.Pod, pm)
 			}
@@ -118,9 +115,7 @@ func update(clientset *kubernetes.Clientset) {
 
 		// Remove the metrics
 		for _, pm := range prunePodMetricList.Pod {
-			fmt.Println("Prunning")
-			fmt.Println(pm.Pod_name)
-			fmt.Println(pm.Container_name)
+			glog.V(3).Infof("Removing pod from the export list: %s/%s", pm.Pod_name, pm.Container_name)
 
 			// for each of these items remove them from the prometheus export
 			export.RemovePodPrometheus(pm)
@@ -196,6 +191,6 @@ func update(clientset *kubernetes.Clientset) {
 			namespaceCostMap[k] = 0
 		}
 
-		time.Sleep(30 * time.Second)
+		time.Sleep(60 * time.Second)
 	}
 }
