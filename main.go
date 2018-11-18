@@ -93,8 +93,7 @@ func update(clientset *kubernetes.Clientset) {
 		}
 
 		// Search for pods that was in the last cycle's list and not in the new list this cycle
-		for i, pm := range podMetricList.Pod {
-			fmt.Println(i)
+		for _, pm := range podMetricList.Pod {
 			var didFindPod bool = false
 
 			// check if this pod is in the updated pods list
