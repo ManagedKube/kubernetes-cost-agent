@@ -72,9 +72,9 @@ func update(clientset *kubernetes.Clientset) {
 
 	namespaceCostMap := make(map[string]float64)
 	var podMetricList k8sPod.PodMetricList
+	var prunePodMetricList k8sPod.PodMetricList
 
 	for {
-
 		nodeList, err := k8sNode.AllNodes(clientset)
 		if err != nil {
 			glog.Errorf("Failed to retrieve nodes: %v", err)
@@ -92,20 +92,50 @@ func update(clientset *kubernetes.Clientset) {
 			return
 		}
 
-		// Reset pod metrics counters
-		// TODO: Would prefer to remove the metrics when it goes to zero.  Havent found a way to do that with
-		// the prometheus libs
-		// for _, p := range podMetricList.Pod {
-		// 	export.PodCostMetric.With(prometheus.Labels{"namespace_name": p.Namespace_name, "pod_name": p.Pod_name, "container_name": p.Container_name, "duration": "minute"}).Set(0)
-		// 	export.PodCostMetric.With(prometheus.Labels{"namespace_name": p.Namespace_name, "pod_name": p.Pod_name, "container_name": p.Container_name, "duration": "hour"}).Set(0)
-		// 	export.PodCostMetric.With(prometheus.Labels{"namespace_name": p.Namespace_name, "pod_name": p.Pod_name, "container_name": p.Container_name, "duration": "day"}).Set(0)
-		// 	export.PodCostMetric.With(prometheus.Labels{"namespace_name": p.Namespace_name, "pod_name": p.Pod_name, "container_name": p.Container_name, "duration": "month"}).Set(0)
-		// }
+		// Search for pods that was in the last cycle's list and not in the new list this cycle
+		for i, pm := range podMetricList.Pod {
+			fmt.Println(i)
+			var didFindPod bool = false
+
+			// check if this pod is in the updated pods list
+			for _, p := range pods.Items {
+
+				if pm.Namespace_name == p.Namespace {
+
+					if pm.Pod_name == p.Name {
+						didFindPod = true
+					}
+				}
+			}
+
+			if !didFindPod {
+				// remove this pod
+				glog.V(3).Infof("xxxxxxxxxxxxx Removing pod from the export list: %s", pm.Pod_name)
+
+				// Remove this entry to the remove pod list
+				prunePodMetricList.Pod = append(prunePodMetricList.Pod, pm)
+			}
+		}
+
+		// Remove the metrics
+		for _, pm := range prunePodMetricList.Pod {
+			fmt.Println("Prunning")
+			fmt.Println(pm.Pod_name)
+			fmt.Println(pm.Container_name)
+
+			// for each of these items remove them from the prometheus export
+			export.RemovePodPrometheus(pm)
+		}
+
+		// Resetting slices
+		podMetricList.Pod = podMetricList.Pod[:0]
+		prunePodMetricList.Pod = prunePodMetricList.Pod[:0]
 
 		//fmt.Println(reflect.TypeOf(pods.Items))
 
 		// loop through each pod and calculate the cost
 		for _, p := range pods.Items {
+
 			if p.Status.Phase == "Running" {
 				//PrettyPrint(p)
 				//fmt.Println(reflect.TypeOf(p))
@@ -135,16 +165,21 @@ func update(clientset *kubernetes.Clientset) {
 					var podUsageMemory int64 = memoryLimit
 					var podUsageCpu int64 = cpuLimit
 
+					// Calculate the cost of this container
 					podCost := cost.CalculatePodCost(nodeInfo, podUsageMemory, podUsageCpu)
 
-					export.Pods(podCost, p, c.Name)
-
+					// Keeping track of last iterations pod list
+					// Used for pruning the metrics list
 					var metric k8sPod.PodMetric
 					metric.Namespace_name = p.Namespace
 					metric.Pod_name = p.Name
 					metric.Container_name = c.Name
+					metric.Duration = "minute"
 
 					podMetricList.Pod = append(podMetricList.Pod, metric)
+
+					// Export pod metrics
+					export.Pods(podCost, p, c.Name)
 
 					// Add this pod to the total
 					namespaceCostMap[p.Namespace] += podCost.MinuteCpu + podCost.MinuteMemory
@@ -162,6 +197,6 @@ func update(clientset *kubernetes.Clientset) {
 			namespaceCostMap[k] = 0
 		}
 
-		time.Sleep(60 * time.Second)
+		time.Sleep(30 * time.Second)
 	}
 }

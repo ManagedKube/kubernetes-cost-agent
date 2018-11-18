@@ -41,16 +41,16 @@ func Pods(podCost cost.PodCost, pod v1.Pod, containerName string) {
 	updatePodsPrometheus(podCost, pod, containerName)
 }
 
+// Updates the prometheus metric with the new values
 func updatePodsPrometheus(podCost cost.PodCost, pod v1.Pod, containerName string) {
 
 	PodCostMetric.With(prometheus.Labels{"namespace_name": pod.Namespace, "pod_name": pod.Name, "container_name": containerName, "duration": "minute"}).Add(podCost.MinuteCpu + podCost.MinuteMemory)
-	PodCostMetric.With(prometheus.Labels{"namespace_name": pod.Namespace, "pod_name": pod.Name, "container_name": containerName, "duration": "hour"}).Add(podCost.HourCpu + podCost.HourMemory)
-	PodCostMetric.With(prometheus.Labels{"namespace_name": pod.Namespace, "pod_name": pod.Name, "container_name": containerName, "duration": "day"}).Add(podCost.DayCpu + podCost.DayMemory)
-	PodCostMetric.With(prometheus.Labels{"namespace_name": pod.Namespace, "pod_name": pod.Name, "container_name": containerName, "duration": "month"}).Add(podCost.MonthCpu + podCost.MonthMemory)
 }
 
-func resetPodsPrometheus(k8sPod.PodMetricList) {
+// Removes a particular metric with these pod labels
+func RemovePodPrometheus(pod k8sPod.PodMetric) {
 
+	PodCostMetric.Delete(prometheus.Labels{"namespace_name": pod.Namespace_name, "pod_name": pod.Pod_name, "container_name": pod.Container_name, "duration": pod.Duration})
 }
 
 func Send() {
