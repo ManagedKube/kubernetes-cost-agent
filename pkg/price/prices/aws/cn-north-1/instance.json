@@ -1,0 +1,193 @@
+{
+  "instances": [
+    {
+      "name": "t2.micro",
+      "memory": 1073741824,
+      "cpu": 1,
+      "hourlyCost": {
+        "onDemand": 0.0116,
+        "reduceCost": 0.0035
+      }
+    },
+    {
+      "name": "t2.nano",
+      "memory": 536870912,
+      "cpu": 1,
+      "hourlyCost": {
+        "onDemand": 0.005,
+        "reduceCost": 0.0065
+      }
+    },
+    {
+      "name": "t2.small",
+      "memory": 2147483648,
+      "cpu": 2,
+      "hourlyCost": {
+        "onDemand": 0.023,
+        "reduceCost": 0.0069
+      }
+    },
+    {
+      "name": "t2.medium",
+      "memory": 4294967296,
+      "cpu": 4,
+      "hourlyCost": {
+        "onDemand": 0.0464,
+        "reduceCost": 0.0139
+      }
+    },
+    {
+      "name": "t2.large",
+      "memory": 8589934592,
+      "cpu": 8,
+      "hourlyCost": {
+        "onDemand": 0.0928,
+        "reduceCost": 0.0278
+      }
+    },
+    {
+      "name": "t2.xlarge",
+      "memory": 17179869184,
+      "cpu": 16,
+      "hourlyCost": {
+        "onDemand": 0.1856,
+        "reduceCost": 0.0478
+      }
+    },
+    {
+      "name": "t2.2xlarge",
+      "memory": 34359738368,
+      "cpu": 32,
+      "hourlyCost": {
+        "onDemand": 0.3712,
+        "reduceCost": 0.1114
+      }
+    },
+    {
+      "name": "m4.large",
+      "memory": 8075688000,
+      "cpu": 2,
+      "hourlyCost": {
+        "onDemand": 0.1,
+        "reduceCost": 0.0401
+      }
+    },
+    {
+      "name": "m4.xlarge",
+      "memory": 16151376000,
+      "cpu": 4,
+      "hourlyCost": {
+        "onDemand": 0.2,
+        "reduceCost": 0.0703
+      }
+    },
+    {
+      "name": "m4.2xlarge",
+      "memory": 34359738368,
+      "cpu": 4,
+      "hourlyCost": {
+        "onDemand": 0.4,
+        "reduceCost": 0.1306
+      }
+    },
+    {
+      "name": "m4.4xlarge",
+      "memory": 68719476736,
+      "cpu": 16,
+      "hourlyCost": {
+        "onDemand": 0.8,
+        "reduceCost": 0.4
+      }
+    },
+    {
+      "name": "m4.10xlarge",
+      "memory": 160438953472,
+      "cpu": 40,
+      "hourlyCost": {
+        "onDemand": 2,
+        "reduceCost": 0.7
+      }
+    },
+    {
+      "name": "m4.16xlarge",
+      "memory": 256877906944,
+      "cpu": 64,
+      "hourlyCost": {
+        "onDemand": 3.2,
+        "reduceCost": 1.05
+      }
+    },
+    {
+      "name": "m5.large",
+      "memory": 8589934592,
+      "cpu": 2,
+      "hourlyCost": {
+        "onDemand": 0.096,
+        "reduceCost": 0.044
+      }
+    },
+    {
+      "name": "m5.xlarge",
+      "memory": 16384000000,
+      "cpu": 16,
+      "hourlyCost": {
+        "onDemand": 0.192,
+        "reduceCost": 0.0799
+      }
+    },
+    {
+      "name": "m5.2xlarge",
+      "memory": 34359738368,
+      "cpu": 32,
+      "hourlyCost": {
+        "onDemand": 0.384,
+        "reduceCost": 0.1816
+      }
+    },
+    {
+      "name": "m5.4xlarge",
+      "memory": 68719476736,
+      "cpu": 64,
+      "hourlyCost": {
+        "onDemand": 0.768,
+        "reduceCost": 0.2666
+      }
+    },
+    {
+      "name": "m5.12xlarge",
+      "memory": 192438953472,
+      "cpu": 384,
+      "hourlyCost": {
+        "onDemand": 2.304,
+        "reduceCost": 1.13
+      }
+    },
+    {
+      "name": "m5.24xlarge",
+      "memory": 384877906944,
+      "cpu": 96,
+      "hourlyCost": {
+        "onDemand": 4.608,
+        "reduceCost": 1.57
+      }
+    },
+    {
+      "name": "r4.xlarge",
+      "memory": 32302752000,
+      "cpu": 4,
+      "hourlyCost": {
+        "onDemand": 0.266,
+        "reduceCost": 0.14
+      }
+    },
+    {
+      "name": "c4.xlarge",
+      "memory": 7575688000,
+      "cpu": 4,
+      "hourlyCost": {
+        "onDemand": 0.199,
+        "reduceCost": 0.09
+      }
+    }
+  ]
+}
