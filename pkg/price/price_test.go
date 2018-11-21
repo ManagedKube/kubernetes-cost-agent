@@ -6,6 +6,8 @@ import (
 
 func TestPricingJSONParsing(t *testing.T) {
 
+	fileLocationPrefix = "./prices/"
+
 	cloud = "test"
 	region = "us-east-1"
 
@@ -28,6 +30,8 @@ func TestPricingJSONParsing(t *testing.T) {
 
 func TestPricingJSONParsing2(t *testing.T) {
 
+	fileLocationPrefix = "./prices/"
+
 	cloud = "test"
 	region = "ap-southeast-1"
 
@@ -49,6 +53,8 @@ func TestPricingJSONParsing2(t *testing.T) {
 }
 
 func TestPricingJSONValues(t *testing.T) {
+
+	fileLocationPrefix = "./prices/"
 
 	instance := Instance{
 		Name:   "t2.micro",
@@ -106,6 +112,8 @@ func TestAutoDetectCloud(t *testing.T) {
 
 func TestNodePricePerHourOnDemand(t *testing.T) {
 
+	fileLocationPrefix = "./prices/"
+
 	region := "us-central1"
 	instanceType := "n1-standard-1"
 	reduceCostInstance := "false"
@@ -119,6 +127,8 @@ func TestNodePricePerHourOnDemand(t *testing.T) {
 }
 
 func TestNodePricePerHourReduceCost(t *testing.T) {
+
+	fileLocationPrefix = "./prices/"
 
 	region := "us-central1"
 	instanceType := "n1-standard-1"

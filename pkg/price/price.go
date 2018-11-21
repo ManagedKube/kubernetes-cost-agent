@@ -55,17 +55,20 @@ var awsRegions = [...]string{
 	"us-west-3",
 }
 
+var fileLocationPrefix = "./pkg/price/prices/"
+
 // Load the instance pricing
 func loadInstancePricing() {
 
 	// Clear instances
 	instances = Instances{}
 
-	// Open jsonFile
-	filepath := "./pkg/price/prices/" + cloud + "/" + region + "/instance.json"
-	glog.V(3).Infof("Opening price file: %s", filepath)
+	// Set path to work in main.go and the tests
+	var fileLocation = fileLocationPrefix + cloud + "/" + region + "/instance.json"
+	glog.V(3).Infof("Opening price file: %s", fileLocation)
 
-	jsonFile, err := os.Open(filepath)
+	// Open jsonFile
+	jsonFile, err := os.Open(fileLocation)
 
 	if err != nil {
 		panic(err)
