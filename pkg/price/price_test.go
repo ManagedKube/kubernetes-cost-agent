@@ -81,3 +81,53 @@ func TestPricingJSONValues(t *testing.T) {
 		t.Errorf("Expected %v got %v", instance.HourlyCost.ReduceCost, instances.Instance[0].HourlyCost.ReduceCost)
 	}
 }
+
+func TestAutoDetectCloud(t *testing.T) {
+	labels := make(map[string]string)
+	labels["cloud.google.com/gke-os-distribution"] = "cos"
+	labels["cloud.google.com/gke-preemptible"] = "true"
+	labels["failure-domain.beta.kubernetes.io/region"] = "us-central1"
+	labels["failure-domain.beta.kubernetes.io/zone"] = "us-central1-a"
+	labels["kubernetes.io/hostname"] = "gke-gar1-default-pool-eb7a3f28-60ht"
+	labels["beta.kubernetes.io/instance-type"] = "n1-standard-1"
+	labels["beta.kubernetes.io/fluentd-ds-ready"] = "true"
+	labels["beta.kubernetes.io/os"] = "linux"
+	labels["cloud.google.com/gke-nodepool"] = "default-pool"
+	labels["beta.kubernetes.io/arch"] = "amd64"
+
+	got := AutoDetectCloud(labels)
+
+	want := "gcp"
+
+	if want != got {
+		t.Errorf("Expected %v got %v", want, got)
+	}
+}
+
+func TestNodePricePerHourOnDemand(t *testing.T) {
+
+	region := "us-central1"
+	instanceType := "n1-standard-1"
+	reduceCostInstance := "false"
+
+	got := NodePricePerHour(region, instanceType, reduceCostInstance)
+	want := 0.0475
+
+	if got != want {
+		t.Errorf("Expected %v got %v", want, got)
+	}
+}
+
+func TestNodePricePerHourReduceCost(t *testing.T) {
+
+	region := "us-central1"
+	instanceType := "n1-standard-1"
+	reduceCostInstance := "true"
+
+	got := NodePricePerHour(region, instanceType, reduceCostInstance)
+	want := 0.01
+
+	if got != want {
+		t.Errorf("Expected %v got %v", want, got)
+	}
+}

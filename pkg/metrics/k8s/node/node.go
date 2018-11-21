@@ -7,6 +7,7 @@ import (
 	"k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
+	"managedkube.com/kube-cost-agent/pkg/price"
 )
 
 // Retrieves all of the nodes in a k8s cluster
@@ -23,17 +24,24 @@ func AllNodes(clientset *kubernetes.Clientset) (NodeList, error) {
 	for _, n := range nodes.Items {
 		//PrettyPrint(n.Status.Capacity)
 		glog.V(3).Infof("Found nodes: %s/%s", n.Name, n.UID)
+		//fmt.Println(reflect.TypeOf(n.Labels))
 
 		var node NodeInfo
 		node.Name = n.Name
 		node.CpuCapacity = n.Status.Capacity.Cpu().MilliValue()
 		node.MemoryCapacity = n.Status.Capacity.Memory().Value()
-		node.ComputeCostPerHour = 0.0475
+		node.Region = getLabelValue(n.Labels, "failure-domain.beta.kubernetes.io/region")
+		node.Zone = getLabelValue(n.Labels, "failure-domain.beta.kubernetes.io/zone")
+		node.InstanceType = getLabelValue(n.Labels, "beta.kubernetes.io/instance-type")
+		node.ReduceCostInstance = getLabelValue(n.Labels, "cloud.google.com/gke-preemptible")
+		node.ComputeCostPerHour = price.NodePricePerHour(node.Region, node.InstanceType, node.ReduceCostInstance)
 
 		glog.V(3).Infof("Node CPU Capacity: %s", strconv.FormatInt(node.CpuCapacity, 10))
 		glog.V(3).Infof("Node Memory Capacity: %s", strconv.FormatInt(node.MemoryCapacity, 10))
+		glog.V(3).Infof("Node HourlyCost: %v", node.ComputeCostPerHour)
 
 		nodeList.Node = append(nodeList.Node, node)
+
 	}
 
 	return nodeList, nil
@@ -64,4 +72,17 @@ func GetNodeInfo(nodes NodeList, nodeName string) (NodeInfo, error) {
 	}
 
 	return info, nil
+}
+
+func getLabelValue(labels map[string]string, labelName string) string {
+
+	labelKey := ""
+
+	for key, val := range labels {
+		if key == labelName {
+			labelKey = val
+		}
+	}
+
+	return labelKey
 }
