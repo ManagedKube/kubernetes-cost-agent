@@ -1,9 +1,12 @@
 package export
 
 import (
+	"fmt"
+
 	"github.com/prometheus/client_golang/prometheus"
 	"k8s.io/api/core/v1"
 	"managedkube.com/kube-cost-agent/pkg/cost"
+	k8sNode "managedkube.com/kube-cost-agent/pkg/metrics/k8s/node"
 	k8sPod "managedkube.com/kube-cost-agent/pkg/metrics/k8s/pod"
 )
 
@@ -26,6 +29,12 @@ var (
 	},
 		[]string{"namespace_name"},
 	)
+	NodeCostMetric = prometheus.NewCounterVec(prometheus.CounterOpts{
+		Name: "mk_node_cost",
+		Help: "ManagedKube - Cost of the node.",
+	},
+		[]string{"node_name", "duration", "instance_type", "cost_per_hour"},
+	)
 )
 
 // Registers the Prometheus metrics
@@ -34,16 +43,32 @@ func Register() {
 	prometheus.MustRegister(NamespaceCost)
 	prometheus.MustRegister(PodCostMetric)
 	prometheus.MustRegister(TotalNumberOfPods)
+	prometheus.MustRegister(NodeCostMetric)
 }
 
-// Updates the pods metrics
+// Update pod metrics
 func Pods(podCost cost.PodCost, pod v1.Pod, containerName string) {
 	updatePodsPrometheus(podCost, pod, containerName)
 }
 
-// Update the namespace metric
+// Update namespace metric
 func Namespace(namespaceName string, duration string, cost float64) {
 	updateNamespacePrometheus(namespaceName, duration, cost)
+}
+
+// Update node metrics
+func Node(nodeInfo k8sNode.NodeInfo) {
+	updateNodePrometheus(nodeInfo)
+}
+
+// Update the prometheus metrics with the new values
+func updateNodePrometheus(nodeInfo k8sNode.NodeInfo) {
+	NodeCostMetric.With(prometheus.Labels{"node_name": nodeInfo.Name, "duration": "minute", "instance_type": nodeInfo.InstanceType, "cost_per_hour": fmt.Sprintf("%f", nodeInfo.ComputeCostPerHour)}).Add(nodeInfo.ComputeCostPerHour / 60)
+}
+
+// Remove a particular metric with these node labels
+func RemoveNodePrometheus(nodeInfo k8sNode.NodeInfo) {
+	NodeCostMetric.Delete(prometheus.Labels{"node_name": nodeInfo.Name, "duration": "minute", "instance_type": nodeInfo.InstanceType, "cost_per_hour": fmt.Sprintf("%f", nodeInfo.ComputeCostPerHour)})
 }
 
 // Updates the prometheus metric with the new values

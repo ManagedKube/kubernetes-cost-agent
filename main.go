@@ -73,11 +73,40 @@ func update(clientset *kubernetes.Clientset) {
 	var podMetricList k8sPod.PodMetricList
 	var prunePodMetricList k8sPod.PodMetricList
 
+	var nodeMetricList k8sNode.NodeList
+	var pruneNodeMetricList k8sNode.NodeList
+
 	for {
 		nodeList, err := k8sNode.AllNodes(clientset)
 		if err != nil {
 			glog.Errorf("Failed to retrieve nodes: %v", err)
 			return
+		}
+
+		// Prune node metrics
+		for _, nm := range nodeMetricList.Node {
+			var didFindNode bool = false
+
+			// check if this node is in the updated node list
+			for _, n := range nodeList.Node {
+
+				if nm.Name == n.Name {
+					didFindNode = true
+				}
+			}
+
+			if !didFindNode {
+				// Remove this entry to the remove node list
+				pruneNodeMetricList.Node = append(pruneNodeMetricList.Node, nm)
+			}
+		}
+
+		// Remove the node metrics
+		for _, nm := range pruneNodeMetricList.Node {
+			glog.V(3).Infof("Removing node from the export list: %s", nm.Name)
+
+			// for each of these items remove them from the prometheus export
+			export.RemoveNodePrometheus(nm)
 		}
 
 		pods, err := k8sPod.GetAllPods(clientset)
@@ -107,7 +136,7 @@ func update(clientset *kubernetes.Clientset) {
 			}
 		}
 
-		// Remove the metrics
+		// Remove the pod metrics
 		for _, pm := range prunePodMetricList.Pod {
 			glog.V(3).Infof("Removing pod from the export list: %s/%s", pm.Pod_name, pm.Container_name)
 
@@ -176,6 +205,15 @@ func update(clientset *kubernetes.Clientset) {
 
 		}
 
+		// export node metrics
+		for _, n := range nodeList.Node {
+			export.Node(n)
+
+			// Adding to the list to be used for comparing for prune
+			nodeMetricList.Node = append(nodeMetricList.Node, n)
+		}
+
+		// export namespace metrics
 		for k, ns := range namespaceCostMap {
 			export.Namespace(k, "minute", ns)
 

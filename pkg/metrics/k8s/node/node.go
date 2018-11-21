@@ -10,10 +10,13 @@ import (
 	"managedkube.com/kube-cost-agent/pkg/price"
 )
 
+var nodeList NodeList
+
 // Retrieves all of the nodes in a k8s cluster
 func AllNodes(clientset *kubernetes.Clientset) (NodeList, error) {
 
-	var nodeList NodeList
+	// Resetting NodeList
+	nodeList.Node = nodeList.Node[:0]
 
 	nodes, err := getNodes(clientset)
 	if err != nil {
