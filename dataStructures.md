@@ -4,6 +4,11 @@ Data Structures
 
 # Node
 
+Kubectl command:
+```
+kubectl get --raw /api/v1/nodes | jq
+```
+
 ```json
 {
   "metadata": {
