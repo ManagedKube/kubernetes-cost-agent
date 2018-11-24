@@ -141,3 +141,39 @@ func TestNodePricePerHourReduceCost(t *testing.T) {
 		t.Errorf("Expected %v got %v", want, got)
 	}
 }
+
+func TestPricingStorageJSONParsing(t *testing.T) {
+
+	fileLocationPrefix = "./prices/"
+
+	cloud = "test"
+	region = "us-east-1"
+
+	got := DiskPricePerHour("standard")
+	want := 0.04
+
+	if got != want {
+		t.Errorf("Expected %v got %v", want, got)
+	}
+
+	got = DiskPricePerHour("ssd")
+	want = 0.170
+
+	if got != want {
+		t.Errorf("Expected %v got %v", want, got)
+	}
+
+	got = DiskPricePerHour("local_ssd")
+	want = 0.080
+
+	if got != want {
+		t.Errorf("Expected %v got %v", want, got)
+	}
+
+	got = DiskPricePerHour("snapshot")
+	want = 0.026
+
+	if got != want {
+		t.Errorf("Expected %v got %v", want, got)
+	}
+}

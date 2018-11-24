@@ -620,3 +620,109 @@ kubectl get --raw /api/v1/nodes | jq
   }
 }
 ```
+
+# PersistentVolumeClaim
+
+Kubectl:
+```
+kubectl get --raw /api/v1/persistentvolumes | jq
+```
+
+```
+{
+  "kind": "PersistentVolumeList",
+  "apiVersion": "v1",
+  "metadata": {
+    "selfLink": "/api/v1/persistentvolumes",
+    "resourceVersion": "406721"
+  },
+  "items": [
+    {
+      "metadata": {
+        "name": "pvc-d065fcbe-edcf-11e8-b20f-42010a800020",
+        "selfLink": "/api/v1/persistentvolumes/pvc-d065fcbe-edcf-11e8-b20f-42010a800020",
+        "uid": "d36f9ff8-edcf-11e8-b20f-42010a800020",
+        "resourceVersion": "6809",
+        "creationTimestamp": "2018-11-21T20:55:49Z",
+        "labels": {
+          "failure-domain.beta.kubernetes.io/region": "us-central1",
+          "failure-domain.beta.kubernetes.io/zone": "us-central1-b"
+        },
+        "annotations": {
+          "kubernetes.io/createdby": "gce-pd-dynamic-provisioner",
+          "pv.kubernetes.io/bound-by-controller": "yes",
+          "pv.kubernetes.io/provisioned-by": "kubernetes.io/gce-pd"
+        }
+      },
+      "spec": {
+        "capacity": {
+          "storage": "50Gi"
+        },
+        "gcePersistentDisk": {
+          "pdName": "gke-gar-2-702b8e2e-dyn-pvc-d065fcbe-edcf-11e8-b20f-42010a800020",
+          "fsType": "ext4"
+        },
+        "accessModes": [
+          "ReadWriteOnce"
+        ],
+        "claimRef": {
+          "kind": "PersistentVolumeClaim",
+          "namespace": "kubernetes-cost-attribution",
+          "name": "cost-attribution-data",
+          "uid": "d065fcbe-edcf-11e8-b20f-42010a800020",
+          "apiVersion": "v1",
+          "resourceVersion": "6750"
+        },
+        "persistentVolumeReclaimPolicy": "Delete",
+        "storageClassName": "standard"
+      },
+      "status": {
+        "phase": "Bound"
+      }
+    },
+    {
+      "metadata": {
+        "name": "pvc-fd986382-eddb-11e8-910e-42010a800036",
+        "selfLink": "/api/v1/persistentvolumes/pvc-fd986382-eddb-11e8-910e-42010a800036",
+        "uid": "0130e784-eddc-11e8-b20f-42010a800020",
+        "resourceVersion": "19168",
+        "creationTimestamp": "2018-11-21T22:23:00Z",
+        "labels": {
+          "failure-domain.beta.kubernetes.io/region": "us-central1",
+          "failure-domain.beta.kubernetes.io/zone": "us-central1-b"
+        },
+        "annotations": {
+          "kubernetes.io/createdby": "gce-pd-dynamic-provisioner",
+          "pv.kubernetes.io/bound-by-controller": "yes",
+          "pv.kubernetes.io/provisioned-by": "kubernetes.io/gce-pd"
+        }
+      },
+      "spec": {
+        "capacity": {
+          "storage": "50Gi"
+        },
+        "gcePersistentDisk": {
+          "pdName": "gke-gar-2-702b8e2e-dyn-pvc-fd986382-eddb-11e8-910e-42010a800036",
+          "fsType": "ext4"
+        },
+        "accessModes": [
+          "ReadWriteOnce"
+        ],
+        "claimRef": {
+          "kind": "PersistentVolumeClaim",
+          "namespace": "test-ns",
+          "name": "cost-attribution-data",
+          "uid": "fd986382-eddb-11e8-910e-42010a800036",
+          "apiVersion": "v1",
+          "resourceVersion": "19104"
+        },
+        "persistentVolumeReclaimPolicy": "Delete",
+        "storageClassName": "standard"
+      },
+      "status": {
+        "phase": "Bound"
+      }
+    }
+  ]
+}
+```

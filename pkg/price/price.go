@@ -11,6 +11,7 @@ import (
 var cloud string
 var region string
 var instances Instances
+var storage Storage
 
 var gcpRegions = [...]string{
 	"asia-east1",
@@ -129,4 +130,48 @@ func NodePricePerHour(regionLocal string, instanceType string, reduceCostInstanc
 	}
 
 	return nodePricePerHour
+}
+
+func GetCloud() string {
+	return cloud
+}
+
+func DiskPricePerHour(diskType string) float64 {
+
+	// Clear instances
+	storage = Storage{}
+
+	var price float64
+
+	// Set path to work in main.go and the tests
+	var fileLocation = fileLocationPrefix + cloud + "/" + region + "/storage.json"
+	glog.V(3).Infof("Opening price file: %s", fileLocation)
+
+	// Open jsonFile
+	jsonFile, err := os.Open(fileLocation)
+
+	if err != nil {
+		panic(err)
+	}
+
+	// read opened json file as a byte array.
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	// unmarshal our byteArray which contains the json
+	json.Unmarshal(byteValue, &storage)
+
+	defer jsonFile.Close()
+
+	switch diskType {
+	case "standard":
+		price = storage.Standard
+	case "ssd":
+		price = storage.Ssd
+	case "local_ssd":
+		price = storage.LocalSsd
+	case "snapshot":
+		price = storage.Snapshot
+	}
+
+	return price
 }

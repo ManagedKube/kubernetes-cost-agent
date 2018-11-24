@@ -10,6 +10,7 @@ import (
 	"managedkube.com/kube-cost-agent/pkg/export"
 
 	k8sNode "managedkube.com/kube-cost-agent/pkg/metrics/k8s/node"
+	k8sPersistentVolume "managedkube.com/kube-cost-agent/pkg/metrics/k8s/persistentVolume"
 	k8sPod "managedkube.com/kube-cost-agent/pkg/metrics/k8s/pod"
 )
 
@@ -22,10 +23,21 @@ func Update(clientset *kubernetes.Clientset) {
 	var nodeMetricList k8sNode.NodeList
 	var pruneNodeMetricList k8sNode.NodeList
 
+	var persistentVolumeMetricList k8sPersistentVolume.PersistentVolumeList
+	var prunePersistenVolumeMetricList k8sPersistentVolume.PersistentVolumeList
+
+	// Main run loop
 	for {
 		nodeList, err := k8sNode.AllNodes(clientset)
 		if err != nil {
 			glog.Errorf("Failed to retrieve nodes: %v", err)
+			return
+		}
+
+		pvcList, err := k8sPersistentVolume.Get(clientset)
+		// pvList, err := k8sPersistentVolume.Get(clientset)
+		if err != nil {
+			glog.Errorf("Failed to retrieve PV: %v", err)
 			return
 		}
 
@@ -53,6 +65,32 @@ func Update(clientset *kubernetes.Clientset) {
 
 			// for each of these items remove them from the prometheus export
 			export.RemoveNodePrometheus(nm)
+		}
+
+		// Prune persistent volume metrics
+		for _, i := range persistentVolumeMetricList.PersistentVolume {
+			var didFindNode bool = false
+
+			// check if this node is in the updated node list
+			for _, n := range pvcList.PersistentVolume {
+
+				if i.Name == n.Name {
+					didFindNode = true
+				}
+			}
+
+			if !didFindNode {
+				// Add this entry to the remove list
+				prunePersistenVolumeMetricList.PersistentVolume = append(prunePersistenVolumeMetricList.PersistentVolume, i)
+			}
+		}
+
+		// Remove the persistent volume metric
+		for _, i := range prunePersistenVolumeMetricList.PersistentVolume {
+			glog.V(3).Infof("Removing persistent volume from the export list: %s/%s", i.Name, i.Claim.Name)
+
+			// for each of these items remove them from the prometheus export
+			export.RemovePersistentVolumePrometheus(i)
 		}
 
 		pods, err := k8sPod.GetAllPods(clientset)
@@ -165,6 +203,14 @@ func Update(clientset *kubernetes.Clientset) {
 
 			// reset counter
 			namespaceCostMap[k] = 0
+		}
+
+		// export persistent volue metric
+		for _, i := range pvcList.PersistentVolume {
+			export.PersistentVolume(i)
+
+			// Adding to the list to be used for comparing for prune
+			persistentVolumeMetricList.PersistentVolume = append(persistentVolumeMetricList.PersistentVolume, i)
 		}
 
 		time.Sleep(60 * time.Second)
