@@ -1,8 +1,6 @@
 package persistentVolume
 
 import (
-	"fmt"
-
 	"github.com/golang/glog"
 	"k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -17,7 +15,7 @@ func Get(clientset *kubernetes.Clientset) (PersistentVolumeList, error) {
 	// Resetting
 	pvList.PersistentVolume = pvList.PersistentVolume[:0]
 
-	fmt.Println(price.GetCloud())
+	//fmt.Println(price.GetCloud())
 
 	pv, err := getPV(clientset)
 	if err != nil {

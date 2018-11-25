@@ -112,7 +112,7 @@ func NodePricePerHour(regionLocal string, instanceType string, reduceCostInstanc
 	for _, i := range awsRegions {
 		if region == i {
 			glog.V(3).Infof("This is in the AWS Region")
-			cloud = "gcp"
+			cloud = "aws"
 		}
 	}
 
