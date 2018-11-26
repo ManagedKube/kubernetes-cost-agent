@@ -7,7 +7,6 @@ import (
 	"net/http"
 
 	"managedkube.com/kube-cost-agent/pkg/agent"
-	"managedkube.com/kube-cost-agent/pkg/export"
 
 	"github.com/golang/glog"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -38,8 +37,6 @@ func main() {
 		glog.Errorf("Failed to create kubernetes client: %v", err)
 		return
 	}
-
-	export.Register()
 
 	go agent.Update(clientset)
 

@@ -124,22 +124,6 @@ func Watch(clientset *kubernetes.Clientset) {
 				podCost = cost.CalculatePodCost(nodeInfo, podUsageMemory, podUsageCpu)
 
 				containerName = c.Name
-
-				// Keeping track of last iterations pod list
-				// Used for pruning the metrics list
-				// var metric PodMetric
-				// metric.Namespace_name = p.Namespace
-				// metric.Pod_name = p.Name
-				// metric.Container_name = c.Name
-				// metric.Duration = "minute"
-
-				//podMetricList.Pod = append(podMetricList.Pod, metric)
-
-				// Export pod metrics
-				//export.Pods(podCost, p, c.Name)
-
-				// Add this pod to the total
-				//namespaceCostMap[p.Namespace] += podCost.MinuteCpu + podCost.MinuteMemory
 			}
 		}
 
