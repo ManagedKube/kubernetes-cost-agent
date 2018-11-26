@@ -11,9 +11,9 @@ type PersistentVolume struct {
 	CostPerGbHour        float64
 }
 
-type PersistentVolumeList struct {
-	PersistentVolume []PersistentVolume
-}
+// type PersistentVolumeList struct {
+// 	PersistentVolume []PersistentVolume
+// }
 
 type PersistentVolumeClaim struct {
 	Name      string

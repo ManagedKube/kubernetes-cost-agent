@@ -8,7 +8,6 @@ import (
 	"managedkube.com/kube-cost-agent/pkg/cost"
 	k8sNode "managedkube.com/kube-cost-agent/pkg/metrics/k8s/node"
 	k8sPersistenVolume "managedkube.com/kube-cost-agent/pkg/metrics/k8s/persistentVolume"
-	k8sPod "managedkube.com/kube-cost-agent/pkg/metrics/k8s/pod"
 )
 
 var (
@@ -47,17 +46,17 @@ var (
 // Registers the Prometheus metrics
 func Register() {
 	// Metrics have to be registered to be exposed:
-	prometheus.MustRegister(NamespaceCost)
-	prometheus.MustRegister(PodCostMetric)
-	prometheus.MustRegister(TotalNumberOfPods)
-	prometheus.MustRegister(NodeCostMetric)
-	prometheus.MustRegister(PersistentVolumeCostMetric)
+	//prometheus.MustRegister(NamespaceCost)
+	//prometheus.MustRegister(PodCostMetric)
+	//prometheus.MustRegister(TotalNumberOfPods)
+	//prometheus.MustRegister(NodeCostMetric)
+	//prometheus.MustRegister(PersistentVolumeCostMetric)
 }
 
 // Update pod metrics
-func Pods(podCost cost.PodCost, pod v1.Pod, containerName string) {
-	updatePodsPrometheus(podCost, pod, containerName)
-}
+// func Pods(podCost cost.PodCost, pod v1.Pod, containerName string) {
+// 	updatePodsPrometheus(podCost, pod, containerName)
+// }
 
 // Update namespace metric
 func Namespace(namespaceName string, duration string, cost float64) {
@@ -91,10 +90,10 @@ func updatePodsPrometheus(podCost cost.PodCost, pod v1.Pod, containerName string
 }
 
 // Removes a particular metric with these pod labels
-func RemovePodPrometheus(pod k8sPod.PodMetric) {
-
-	PodCostMetric.Delete(prometheus.Labels{"namespace_name": pod.Namespace_name, "pod_name": pod.Pod_name, "container_name": pod.Container_name, "duration": pod.Duration})
-}
+// func RemovePodPrometheus(pod k8sPod.PodMetric) {
+//
+// 	PodCostMetric.Delete(prometheus.Labels{"namespace_name": pod.Namespace_name, "pod_name": pod.Pod_name, "container_name": pod.Container_name, "duration": pod.Duration})
+// }
 
 func updateNamespacePrometheus(namespaceName string, duration string, cost float64) {
 	NamespaceCost.With(prometheus.Labels{"namespace_name": namespaceName, "duration": duration}).Add(cost)

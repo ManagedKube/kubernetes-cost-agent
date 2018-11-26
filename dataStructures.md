@@ -726,3 +726,510 @@ kubectl get --raw /api/v1/persistentvolumes | jq
   ]
 }
 ```
+# Service
+
+```
+$ kubectl get --raw /api/v1/services | jq
+```
+
+```json
+{
+  "kind": "ServiceList",
+  "apiVersion": "v1",
+  "metadata": {
+    "selfLink": "/api/v1/services",
+    "resourceVersion": "793822"
+  },
+  "items": [
+    {
+      "metadata": {
+        "name": "kubernetes",
+        "namespace": "default",
+        "selfLink": "/api/v1/namespaces/default/services/kubernetes",
+        "uid": "b145823f-edc9-11e8-b20f-42010a800020",
+        "resourceVersion": "6",
+        "creationTimestamp": "2018-11-21T20:11:55Z",
+        "labels": {
+          "component": "apiserver",
+          "provider": "kubernetes"
+        }
+      },
+      "spec": {
+        "ports": [
+          {
+            "name": "https",
+            "protocol": "TCP",
+            "port": 443,
+            "targetPort": 443
+          }
+        ],
+        "clusterIP": "10.59.240.1",
+        "type": "ClusterIP",
+        "sessionAffinity": "ClientIP",
+        "sessionAffinityConfig": {
+          "clientIP": {
+            "timeoutSeconds": 10800
+          }
+        }
+      },
+      "status": {
+        "loadBalancer": {}
+      }
+    },
+    {
+      "metadata": {
+        "name": "default-http-backend",
+        "namespace": "kube-system",
+        "selfLink": "/api/v1/namespaces/kube-system/services/default-http-backend",
+        "uid": "c4c6d3a8-edc9-11e8-b20f-42010a800020",
+        "resourceVersion": "278",
+        "creationTimestamp": "2018-11-21T20:12:28Z",
+        "labels": {
+          "addonmanager.kubernetes.io/mode": "Reconcile",
+          "k8s-app": "glbc",
+          "kubernetes.io/cluster-service": "true",
+          "kubernetes.io/name": "GLBCDefaultBackend"
+        },
+        "annotations": {
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"labels\":{\"addonmanager.kubernetes.io/mode\":\"Reconcile\",\"k8s-app\":\"glbc\",\"kubernetes.io/cluster-service\":\"true\",\"kubernetes.io/name\":\"GLBCDefaultBackend\"},\"name\":\"default-http-backend\",\"namespace\":\"kube-system\"},\"spec\":{\"ports\":[{\"name\":\"http\",\"port\":80,\"protocol\":\"TCP\",\"targetPort\":8080}],\"selector\":{\"k8s-app\":\"glbc\"},\"type\":\"NodePort\"}}\n"
+        }
+      },
+      "spec": {
+        "ports": [
+          {
+            "name": "http",
+            "protocol": "TCP",
+            "port": 80,
+            "targetPort": 8080,
+            "nodePort": 30889
+          }
+        ],
+        "selector": {
+          "k8s-app": "glbc"
+        },
+        "clusterIP": "10.59.246.64",
+        "type": "NodePort",
+        "sessionAffinity": "None",
+        "externalTrafficPolicy": "Cluster"
+      },
+      "status": {
+        "loadBalancer": {}
+      }
+    },
+    {
+      "metadata": {
+        "name": "heapster",
+        "namespace": "kube-system",
+        "selfLink": "/api/v1/namespaces/kube-system/services/heapster",
+        "uid": "c58fa9db-edc9-11e8-b20f-42010a800020",
+        "resourceVersion": "299",
+        "creationTimestamp": "2018-11-21T20:12:29Z",
+        "labels": {
+          "addonmanager.kubernetes.io/mode": "Reconcile",
+          "kubernetes.io/cluster-service": "true",
+          "kubernetes.io/name": "Heapster"
+        },
+        "annotations": {
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"labels\":{\"addonmanager.kubernetes.io/mode\":\"Reconcile\",\"kubernetes.io/cluster-service\":\"true\",\"kubernetes.io/name\":\"Heapster\"},\"name\":\"heapster\",\"namespace\":\"kube-system\"},\"spec\":{\"ports\":[{\"port\":80,\"targetPort\":8082}],\"selector\":{\"k8s-app\":\"heapster\"}}}\n"
+        }
+      },
+      "spec": {
+        "ports": [
+          {
+            "protocol": "TCP",
+            "port": 80,
+            "targetPort": 8082
+          }
+        ],
+        "selector": {
+          "k8s-app": "heapster"
+        },
+        "clusterIP": "10.59.254.38",
+        "type": "ClusterIP",
+        "sessionAffinity": "None"
+      },
+      "status": {
+        "loadBalancer": {}
+      }
+    },
+    {
+      "metadata": {
+        "name": "kube-dns",
+        "namespace": "kube-system",
+        "selfLink": "/api/v1/namespaces/kube-system/services/kube-dns",
+        "uid": "c6108f81-edc9-11e8-b20f-42010a800020",
+        "resourceVersion": "315",
+        "creationTimestamp": "2018-11-21T20:12:30Z",
+        "labels": {
+          "addonmanager.kubernetes.io/mode": "Reconcile",
+          "k8s-app": "kube-dns",
+          "kubernetes.io/cluster-service": "true",
+          "kubernetes.io/name": "KubeDNS"
+        },
+        "annotations": {
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"labels\":{\"addonmanager.kubernetes.io/mode\":\"Reconcile\",\"k8s-app\":\"kube-dns\",\"kubernetes.io/cluster-service\":\"true\",\"kubernetes.io/name\":\"KubeDNS\"},\"name\":\"kube-dns\",\"namespace\":\"kube-system\"},\"spec\":{\"clusterIP\":\"10.59.240.10\",\"ports\":[{\"name\":\"dns\",\"port\":53,\"protocol\":\"UDP\"},{\"name\":\"dns-tcp\",\"port\":53,\"protocol\":\"TCP\"}],\"selector\":{\"k8s-app\":\"kube-dns\"}}}\n"
+        }
+      },
+      "spec": {
+        "ports": [
+          {
+            "name": "dns",
+            "protocol": "UDP",
+            "port": 53,
+            "targetPort": 53
+          },
+          {
+            "name": "dns-tcp",
+            "protocol": "TCP",
+            "port": 53,
+            "targetPort": 53
+          }
+        ],
+        "selector": {
+          "k8s-app": "kube-dns"
+        },
+        "clusterIP": "10.59.240.10",
+        "type": "ClusterIP",
+        "sessionAffinity": "None"
+      },
+      "status": {
+        "loadBalancer": {}
+      }
+    },
+    {
+      "metadata": {
+        "name": "kubernetes-dashboard",
+        "namespace": "kube-system",
+        "selfLink": "/api/v1/namespaces/kube-system/services/kubernetes-dashboard",
+        "uid": "c5faea74-edc9-11e8-b20f-42010a800020",
+        "resourceVersion": "312",
+        "creationTimestamp": "2018-11-21T20:12:30Z",
+        "labels": {
+          "addonmanager.kubernetes.io/mode": "Reconcile",
+          "k8s-app": "kubernetes-dashboard",
+          "kubernetes.io/cluster-service": "true"
+        },
+        "annotations": {
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"labels\":{\"addonmanager.kubernetes.io/mode\":\"Reconcile\",\"k8s-app\":\"kubernetes-dashboard\",\"kubernetes.io/cluster-service\":\"true\"},\"name\":\"kubernetes-dashboard\",\"namespace\":\"kube-system\"},\"spec\":{\"ports\":[{\"port\":443,\"targetPort\":8443}],\"selector\":{\"k8s-app\":\"kubernetes-dashboard\"}}}\n"
+        }
+      },
+      "spec": {
+        "ports": [
+          {
+            "protocol": "TCP",
+            "port": 443,
+            "targetPort": 8443
+          }
+        ],
+        "selector": {
+          "k8s-app": "kubernetes-dashboard"
+        },
+        "clusterIP": "10.59.253.235",
+        "type": "ClusterIP",
+        "sessionAffinity": "None"
+      },
+      "status": {
+        "loadBalancer": {}
+      }
+    },
+    {
+      "metadata": {
+        "name": "metrics-server",
+        "namespace": "kube-system",
+        "selfLink": "/api/v1/namespaces/kube-system/services/metrics-server",
+        "uid": "cbba6ed6-edc9-11e8-b20f-42010a800020",
+        "resourceVersion": "382",
+        "creationTimestamp": "2018-11-21T20:12:39Z",
+        "labels": {
+          "addonmanager.kubernetes.io/mode": "Reconcile",
+          "kubernetes.io/cluster-service": "true",
+          "kubernetes.io/name": "Metrics-server"
+        },
+        "annotations": {
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"labels\":{\"addonmanager.kubernetes.io/mode\":\"Reconcile\",\"kubernetes.io/cluster-service\":\"true\",\"kubernetes.io/name\":\"Metrics-server\"},\"name\":\"metrics-server\",\"namespace\":\"kube-system\"},\"spec\":{\"ports\":[{\"port\":443,\"protocol\":\"TCP\",\"targetPort\":\"https\"}],\"selector\":{\"k8s-app\":\"metrics-server\"}}}\n"
+        }
+      },
+      "spec": {
+        "ports": [
+          {
+            "protocol": "TCP",
+            "port": 443,
+            "targetPort": "https"
+          }
+        ],
+        "selector": {
+          "k8s-app": "metrics-server"
+        },
+        "clusterIP": "10.59.247.162",
+        "type": "ClusterIP",
+        "sessionAffinity": "None"
+      },
+      "status": {
+        "loadBalancer": {}
+      }
+    },
+    {
+      "metadata": {
+        "name": "cost-attribution-grafana",
+        "namespace": "kubernetes-cost-attribution",
+        "selfLink": "/api/v1/namespaces/kubernetes-cost-attribution/services/cost-attribution-grafana",
+        "uid": "d11aa4fb-edcf-11e8-b20f-42010a800020",
+        "resourceVersion": "6967",
+        "creationTimestamp": "2018-11-21T20:55:45Z",
+        "labels": {
+          "app": "cost-attribution-grafana"
+        },
+        "annotations": {
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"cost-attribution-grafana\"},\"name\":\"cost-attribution-grafana\",\"namespace\":\"kubernetes-cost-attribution\"},\"spec\":{\"ports\":[{\"name\":\"web\",\"port\":80,\"targetPort\":3000}],\"selector\":{\"app\":\"cost-attribution-grafana\"},\"type\":\"LoadBalancer\"}}\n"
+        }
+      },
+      "spec": {
+        "ports": [
+          {
+            "name": "web",
+            "protocol": "TCP",
+            "port": 80,
+            "targetPort": 3000,
+            "nodePort": 30392
+          }
+        ],
+        "selector": {
+          "app": "cost-attribution-grafana"
+        },
+        "clusterIP": "10.59.254.168",
+        "type": "LoadBalancer",
+        "sessionAffinity": "None",
+        "externalTrafficPolicy": "Cluster"
+      },
+      "status": {
+        "loadBalancer": {
+          "ingress": [
+            {
+              "ip": "35.193.118.19"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "cost-attribution-mk-agent",
+        "namespace": "kubernetes-cost-attribution",
+        "selfLink": "/api/v1/namespaces/kubernetes-cost-attribution/services/cost-attribution-mk-agent",
+        "uid": "d0ea86b0-edcf-11e8-b20f-42010a800020",
+        "resourceVersion": "6771",
+        "creationTimestamp": "2018-11-21T20:55:45Z",
+        "labels": {
+          "app": "cost-attribution-mk-agent"
+        },
+        "annotations": {
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{\"prometheus.io/port\":\"9101\",\"prometheus.io/scrape\":\"true\"},\"labels\":{\"app\":\"cost-attribution-mk-agent\"},\"name\":\"cost-attribution-mk-agent\",\"namespace\":\"kubernetes-cost-attribution\"},\"spec\":{\"ports\":[{\"name\":\"web\",\"port\":9101}],\"selector\":{\"app\":\"cost-attribution-mk-agent\"}}}\n",
+          "prometheus.io/port": "9101",
+          "prometheus.io/scrape": "true"
+        }
+      },
+      "spec": {
+        "ports": [
+          {
+            "name": "web",
+            "protocol": "TCP",
+            "port": 9101,
+            "targetPort": 9101
+          }
+        ],
+        "selector": {
+          "app": "cost-attribution-mk-agent"
+        },
+        "clusterIP": "10.59.247.179",
+        "type": "ClusterIP",
+        "sessionAffinity": "None"
+      },
+      "status": {
+        "loadBalancer": {}
+      }
+    },
+    {
+      "metadata": {
+        "name": "cost-attribution-prometheus",
+        "namespace": "kubernetes-cost-attribution",
+        "selfLink": "/api/v1/namespaces/kubernetes-cost-attribution/services/cost-attribution-prometheus",
+        "uid": "d0a56407-edcf-11e8-b20f-42010a800020",
+        "resourceVersion": "6757",
+        "creationTimestamp": "2018-11-21T20:55:44Z",
+        "labels": {
+          "app": "prometheus"
+        },
+        "annotations": {
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{\"prometheus.io/scrape\":\"true\"},\"labels\":{\"app\":\"prometheus\"},\"name\":\"cost-attribution-prometheus\",\"namespace\":\"kubernetes-cost-attribution\"},\"spec\":{\"ports\":[{\"name\":\"prometheus\",\"port\":9090}],\"selector\":{\"app\":\"prometheus\"}}}\n",
+          "prometheus.io/scrape": "true"
+        }
+      },
+      "spec": {
+        "ports": [
+          {
+            "name": "prometheus",
+            "protocol": "TCP",
+            "port": 9090,
+            "targetPort": 9090
+          }
+        ],
+        "selector": {
+          "app": "prometheus"
+        },
+        "clusterIP": "10.59.255.166",
+        "type": "ClusterIP",
+        "sessionAffinity": "None"
+      },
+      "status": {
+        "loadBalancer": {}
+      }
+    },
+    {
+      "metadata": {
+        "name": "cost-attribution-grafana",
+        "namespace": "test-ns",
+        "selfLink": "/api/v1/namespaces/test-ns/services/cost-attribution-grafana",
+        "uid": "fdac3833-eddb-11e8-910e-42010a800036",
+        "resourceVersion": "19276",
+        "creationTimestamp": "2018-11-21T22:22:54Z",
+        "labels": {
+          "app": "cost-attribution-grafana",
+          "app.kubernetes.io/name": "test-deployment"
+        },
+        "annotations": {
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"cost-attribution-grafana\",\"app.kubernetes.io/name\":\"test-deployment\"},\"name\":\"cost-attribution-grafana\",\"namespace\":\"test-ns\",\"ownerReferences\":[{\"apiVersion\":\"app.k8s.io/v1beta1\",\"blockOwnerDeletion\":true,\"kind\":\"Application\",\"name\":\"test-deployment\",\"uid\":\"f99fc1e9-eddb-11e8-96bc-42010a800022\"}]},\"spec\":{\"ports\":[{\"name\":\"web\",\"port\":80,\"targetPort\":3000}],\"selector\":{\"app\":\"cost-attribution-grafana\"},\"type\":\"LoadBalancer\"}}\n"
+        },
+        "ownerReferences": [
+          {
+            "apiVersion": "app.k8s.io/v1beta1",
+            "kind": "Application",
+            "name": "test-deployment",
+            "uid": "f99fc1e9-eddb-11e8-96bc-42010a800022",
+            "blockOwnerDeletion": true
+          }
+        ]
+      },
+      "spec": {
+        "ports": [
+          {
+            "name": "web",
+            "protocol": "TCP",
+            "port": 80,
+            "targetPort": 3000,
+            "nodePort": 31633
+          }
+        ],
+        "selector": {
+          "app": "cost-attribution-grafana"
+        },
+        "clusterIP": "10.59.243.238",
+        "type": "LoadBalancer",
+        "sessionAffinity": "None",
+        "externalTrafficPolicy": "Cluster"
+      },
+      "status": {
+        "loadBalancer": {
+          "ingress": [
+            {
+              "ip": "35.192.152.172"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "cost-attribution-mk-agent",
+        "namespace": "test-ns",
+        "selfLink": "/api/v1/namespaces/test-ns/services/cost-attribution-mk-agent",
+        "uid": "fda336a4-eddb-11e8-910e-42010a800036",
+        "resourceVersion": "19110",
+        "creationTimestamp": "2018-11-21T22:22:54Z",
+        "labels": {
+          "app": "cost-attribution-mk-agent",
+          "app.kubernetes.io/name": "test-deployment"
+        },
+        "annotations": {
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{\"prometheus.io/port\":\"9101\",\"prometheus.io/scrape\":\"true\"},\"labels\":{\"app\":\"cost-attribution-mk-agent\",\"app.kubernetes.io/name\":\"test-deployment\"},\"name\":\"cost-attribution-mk-agent\",\"namespace\":\"test-ns\",\"ownerReferences\":[{\"apiVersion\":\"app.k8s.io/v1beta1\",\"blockOwnerDeletion\":true,\"kind\":\"Application\",\"name\":\"test-deployment\",\"uid\":\"f99fc1e9-eddb-11e8-96bc-42010a800022\"}]},\"spec\":{\"ports\":[{\"name\":\"web\",\"port\":9101}],\"selector\":{\"app\":\"cost-attribution-mk-agent\"}}}\n",
+          "prometheus.io/port": "9101",
+          "prometheus.io/scrape": "true"
+        },
+        "ownerReferences": [
+          {
+            "apiVersion": "app.k8s.io/v1beta1",
+            "kind": "Application",
+            "name": "test-deployment",
+            "uid": "f99fc1e9-eddb-11e8-96bc-42010a800022",
+            "blockOwnerDeletion": true
+          }
+        ]
+      },
+      "spec": {
+        "ports": [
+          {
+            "name": "web",
+            "protocol": "TCP",
+            "port": 9101,
+            "targetPort": 9101
+          }
+        ],
+        "selector": {
+          "app": "cost-attribution-mk-agent"
+        },
+        "clusterIP": "10.59.245.162",
+        "type": "ClusterIP",
+        "sessionAffinity": "None"
+      },
+      "status": {
+        "loadBalancer": {}
+      }
+    },
+    {
+      "metadata": {
+        "name": "cost-attribution-prometheus",
+        "namespace": "test-ns",
+        "selfLink": "/api/v1/namespaces/test-ns/services/cost-attribution-prometheus",
+        "uid": "fd9ba05f-eddb-11e8-910e-42010a800036",
+        "resourceVersion": "19106",
+        "creationTimestamp": "2018-11-21T22:22:54Z",
+        "labels": {
+          "app": "prometheus",
+          "app.kubernetes.io/name": "test-deployment"
+        },
+        "annotations": {
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{\"prometheus.io/scrape\":\"true\"},\"labels\":{\"app\":\"prometheus\",\"app.kubernetes.io/name\":\"test-deployment\"},\"name\":\"cost-attribution-prometheus\",\"namespace\":\"test-ns\",\"ownerReferences\":[{\"apiVersion\":\"app.k8s.io/v1beta1\",\"blockOwnerDeletion\":true,\"kind\":\"Application\",\"name\":\"test-deployment\",\"uid\":\"f99fc1e9-eddb-11e8-96bc-42010a800022\"}]},\"spec\":{\"ports\":[{\"name\":\"prometheus\",\"port\":9090}],\"selector\":{\"app\":\"prometheus\"}}}\n",
+          "prometheus.io/scrape": "true"
+        },
+        "ownerReferences": [
+          {
+            "apiVersion": "app.k8s.io/v1beta1",
+            "kind": "Application",
+            "name": "test-deployment",
+            "uid": "f99fc1e9-eddb-11e8-96bc-42010a800022",
+            "blockOwnerDeletion": true
+          }
+        ]
+      },
+      "spec": {
+        "ports": [
+          {
+            "name": "prometheus",
+            "protocol": "TCP",
+            "port": 9090,
+            "targetPort": 9090
+          }
+        ],
+        "selector": {
+          "app": "prometheus"
+        },
+        "clusterIP": "10.59.249.39",
+        "type": "ClusterIP",
+        "sessionAffinity": "None"
+      },
+      "status": {
+        "loadBalancer": {}
+      }
+    }
+  ]
+}
+```
