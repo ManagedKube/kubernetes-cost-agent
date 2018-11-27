@@ -49,7 +49,7 @@ data:
             "#d44a3a"
           ],
           "datasource": "prometheus",
-          "decimals": 12,
+          "decimals": 2,
           "format": "currencyUSD",
           "gauge": {
             "maxValue": 100,
@@ -110,7 +110,7 @@ data:
             }
           ],
           "thresholds": "",
-          "timeFrom": "24h",
+          "timeFrom": "30d",
           "title": "Total  Cost 30 Days",
           "type": "singlestat",
           "valueFontSize": "80%",
@@ -133,7 +133,7 @@ data:
             "#d44a3a"
           ],
           "datasource": "prometheus",
-          "decimals": 12,
+          "decimals": 2,
           "format": "currencyUSD",
           "gauge": {
             "maxValue": 100,
@@ -230,7 +230,7 @@ data:
             "#d44a3a"
           ],
           "datasource": "prometheus",
-          "decimals": 6,
+          "decimals": 2,
           "format": "currencyUSD",
           "gauge": {
             "maxValue": 100,
@@ -315,7 +315,7 @@ data:
             "#d44a3a"
           ],
           "datasource": "prometheus",
-          "decimals": 12,
+          "decimals": 2,
           "format": "currencyUSD",
           "gauge": {
             "maxValue": 100,
@@ -668,8 +668,8 @@ data:
             "#d44a3a"
           ],
           "datasource": "prometheus",
-          "decimals": 6,
-          "format": "none",
+          "decimals": 2,
+          "format": "currencyUSD",
           "gauge": {
             "maxValue": 100,
             "minValue": 0,
@@ -751,8 +751,8 @@ data:
             "#d44a3a"
           ],
           "datasource": "prometheus",
-          "decimals": 6,
-          "format": "none",
+          "decimals": 2,
+          "format": "currencyUSD",
           "gauge": {
             "maxValue": 100,
             "minValue": 0,
@@ -975,8 +975,8 @@ data:
             "#d44a3a"
           ],
           "datasource": "prometheus",
-          "decimals": 6,
-          "format": "none",
+          "decimals": 2,
+          "format": "currencyUSD",
           "gauge": {
             "maxValue": 100,
             "minValue": 0,
@@ -1058,8 +1058,8 @@ data:
             "#d44a3a"
           ],
           "datasource": "prometheus",
-          "decimals": 6,
-          "format": "none",
+          "decimals": 2,
+          "format": "currencyUSD",
           "gauge": {
             "maxValue": 100,
             "minValue": 0,
