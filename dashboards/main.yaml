@@ -574,49 +574,6 @@ data:
           "type": "text"
         },
         {
-          "columns": [],
-          "datasource": "prometheus",
-          "fontSize": "100%",
-          "gridPos": {
-            "h": 9,
-            "w": 24,
-            "x": 0,
-            "y": 25
-          },
-          "id": 24,
-          "links": [],
-          "pageSize": null,
-          "scroll": true,
-          "showHeader": true,
-          "sort": {
-            "col": 0,
-            "desc": true
-          },
-          "styles": [
-            {
-              "$$hashKey": "object:1677",
-              "alias": "Time",
-              "dateFormat": "YYYY-MM-DD HH:mm:ss",
-              "pattern": "Time",
-              "type": "date"
-            }
-          ],
-          "targets": [
-            {
-              "$$hashKey": "object:1070",
-              "expr": "sum(mk_node_cost{duration=\"minute\"}) by (node_name, instance_type, cost_per_hour)",
-              "format": "table",
-              "instant": true,
-              "intervalFactor": 1,
-              "legendFormat": "",
-              "refId": "A"
-            }
-          ],
-          "title": "Node List",
-          "transform": "table",
-          "type": "table"
-        },
-        {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
@@ -627,7 +584,7 @@ data:
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 34
+            "y": 25
           },
           "id": 26,
           "legend": {
@@ -724,7 +681,7 @@ data:
             "h": 5,
             "w": 12,
             "x": 12,
-            "y": 34
+            "y": 25
           },
           "id": 28,
           "interval": null,
@@ -807,7 +764,7 @@ data:
             "h": 4,
             "w": 12,
             "x": 12,
-            "y": 39
+            "y": 30
           },
           "id": 32,
           "interval": null,
@@ -866,6 +823,49 @@ data:
             }
           ],
           "valueName": "avg"
+        },
+        {
+          "columns": [],
+          "datasource": "prometheus",
+          "fontSize": "100%",
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 34
+          },
+          "id": 24,
+          "links": [],
+          "pageSize": null,
+          "scroll": true,
+          "showHeader": true,
+          "sort": {
+            "col": 0,
+            "desc": true
+          },
+          "styles": [
+            {
+              "$$hashKey": "object:1677",
+              "alias": "Time",
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "pattern": "Time",
+              "type": "date"
+            }
+          ],
+          "targets": [
+            {
+              "$$hashKey": "object:1070",
+              "expr": "sum(mk_node_cost{duration=\"minute\"}) by (node_name, instance_type, cost_per_hour)",
+              "format": "table",
+              "instant": true,
+              "intervalFactor": 1,
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "title": "Node List",
+          "transform": "table",
+          "type": "table"
         },
         {
           "content": "# Persistent Volume Cost",
@@ -1132,12 +1132,55 @@ data:
           "valueName": "avg"
         },
         {
+          "columns": [],
+          "datasource": "prometheus",
+          "fontSize": "100%",
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 54
+          },
+          "id": 40,
+          "links": [],
+          "pageSize": null,
+          "scroll": true,
+          "showHeader": true,
+          "sort": {
+            "col": 0,
+            "desc": true
+          },
+          "styles": [
+            {
+              "$$hashKey": "object:1677",
+              "alias": "Time",
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "pattern": "Time",
+              "type": "date"
+            }
+          ],
+          "targets": [
+            {
+              "$$hashKey": "object:1070",
+              "expr": "sum(mk_persisten_volume_cost{duration=\"minute\"}) by (namespace_name, cost_per_hour, disk_type, claim_name,disk_size)",
+              "format": "table",
+              "instant": true,
+              "intervalFactor": 1,
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "title": "Persistent Volume List",
+          "transform": "table",
+          "type": "table"
+        },
+        {
           "content": "# Contact Us\nFeel free to contact us with any questions or comments.  We would love to hear from you.\n\nsupport@managedkube.com\n",
           "gridPos": {
             "h": 4,
             "w": 24,
             "x": 0,
-            "y": 54
+            "y": 63
           },
           "id": 12,
           "mode": "markdown",
