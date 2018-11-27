@@ -27,6 +27,200 @@ data:
       "links": [],
       "panels": [
         {
+          "content": "# Grand Total",
+          "gridPos": {
+            "h": 2,
+            "w": 24,
+            "x": 0,
+            "y": 0
+          },
+          "id": 36,
+          "mode": "markdown",
+          "title": "Panel Title",
+          "type": "text"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "#299c46",
+            "rgba(237, 129, 40, 0.89)",
+            "#d44a3a"
+          ],
+          "datasource": "prometheus",
+          "decimals": 12,
+          "format": "currencyUSD",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 12,
+            "x": 0,
+            "y": 2
+          },
+          "id": 34,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "tableColumn": "Value",
+          "targets": [
+            {
+              "$$hashKey": "object:809",
+              "expr": "(sum(mk_pod_cost{duration=\"minute\"}) * 60 * 24 * 30) + \n(sum(mk_node_cost{duration=\"minute\"}) * 60 * 24 * 30) + \n(sum(mk_persisten_volume_cost{duration=\"minute\"}) * 60 * 24 * 30)",
+              "format": "time_series",
+              "instant": true,
+              "intervalFactor": 1,
+              "refId": "A"
+            }
+          ],
+          "thresholds": "",
+          "timeFrom": "24h",
+          "title": "Total  Cost 30 Days",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "max"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "#299c46",
+            "rgba(237, 129, 40, 0.89)",
+            "#d44a3a"
+          ],
+          "datasource": "prometheus",
+          "decimals": 12,
+          "format": "currencyUSD",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 12,
+            "x": 12,
+            "y": 2
+          },
+          "id": 33,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "tableColumn": "Value",
+          "targets": [
+            {
+              "$$hashKey": "object:809",
+              "expr": "(sum(mk_pod_cost{duration=\"minute\"}) * 60 * 24) + \n(sum(mk_node_cost{duration=\"minute\"}) * 60 * 24) + \n(sum(mk_persisten_volume_cost{duration=\"minute\"}) * 60 * 24)",
+              "format": "time_series",
+              "instant": true,
+              "intervalFactor": 1,
+              "refId": "A"
+            }
+          ],
+          "thresholds": "",
+          "timeFrom": "24h",
+          "title": "Total  Cost 24 Hours",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "max"
+        },
+        {
+          "content": "# Compute Cost",
+          "gridPos": {
+            "h": 2,
+            "w": 24,
+            "x": 0,
+            "y": 7
+          },
+          "id": 37,
+          "mode": "markdown",
+          "title": "Panel Title",
+          "type": "text"
+        },
+        {
           "cacheTimeout": null,
           "colorBackground": false,
           "colorValue": false,
@@ -49,7 +243,7 @@ data:
             "h": 5,
             "w": 12,
             "x": 0,
-            "y": 0
+            "y": 9
           },
           "id": 22,
           "interval": null,
@@ -134,7 +328,7 @@ data:
             "h": 5,
             "w": 12,
             "x": 12,
-            "y": 0
+            "y": 9
           },
           "id": 14,
           "interval": null,
@@ -206,7 +400,7 @@ data:
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 5
+            "y": 14
           },
           "id": 20,
           "legend": {
@@ -292,7 +486,7 @@ data:
             "h": 9,
             "w": 12,
             "x": 12,
-            "y": 5
+            "y": 14
           },
           "id": 21,
           "legend": {
@@ -367,6 +561,19 @@ data:
           }
         },
         {
+          "content": "# Instance Cost",
+          "gridPos": {
+            "h": 2,
+            "w": 24,
+            "x": 0,
+            "y": 23
+          },
+          "id": 38,
+          "mode": "markdown",
+          "title": "Panel Title",
+          "type": "text"
+        },
+        {
           "columns": [],
           "datasource": "prometheus",
           "fontSize": "100%",
@@ -374,7 +581,7 @@ data:
             "h": 9,
             "w": 24,
             "x": 0,
-            "y": 14
+            "y": 25
           },
           "id": 24,
           "links": [],
@@ -420,7 +627,7 @@ data:
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 23
+            "y": 34
           },
           "id": 26,
           "legend": {
@@ -517,7 +724,7 @@ data:
             "h": 5,
             "w": 12,
             "x": 12,
-            "y": 23
+            "y": 34
           },
           "id": 28,
           "interval": null,
@@ -600,7 +807,7 @@ data:
             "h": 4,
             "w": 12,
             "x": 12,
-            "y": 28
+            "y": 39
           },
           "id": 32,
           "interval": null,
@@ -661,6 +868,19 @@ data:
           "valueName": "avg"
         },
         {
+          "content": "# Persistent Volume Cost",
+          "gridPos": {
+            "h": 2,
+            "w": 24,
+            "x": 0,
+            "y": 43
+          },
+          "id": 39,
+          "mode": "markdown",
+          "title": "Panel Title",
+          "type": "text"
+        },
+        {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
@@ -671,7 +891,7 @@ data:
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 32
+            "y": 45
           },
           "id": 29,
           "legend": {
@@ -768,7 +988,7 @@ data:
             "h": 4,
             "w": 12,
             "x": 12,
-            "y": 32
+            "y": 45
           },
           "id": 30,
           "interval": null,
@@ -851,7 +1071,7 @@ data:
             "h": 5,
             "w": 12,
             "x": 12,
-            "y": 36
+            "y": 49
           },
           "id": 31,
           "interval": null,
@@ -917,7 +1137,7 @@ data:
             "h": 4,
             "w": 24,
             "x": 0,
-            "y": 41
+            "y": 54
           },
           "id": 12,
           "mode": "markdown",

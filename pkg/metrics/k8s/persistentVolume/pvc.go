@@ -3,6 +3,7 @@ package persistentVolume
 import (
 	"fmt"
 	"log"
+	"strconv"
 
 	"github.com/golang/glog"
 	"github.com/prometheus/client_golang/prometheus"
@@ -20,7 +21,7 @@ var (
 		Name: "mk_persisten_volume_cost",
 		Help: "ManagedKube - Cost of the persisten volume.",
 	},
-		[]string{"namespace_name", "persistent_volume_name", "duration", "disk_type", "cost_per_hour", "claim_name"},
+		[]string{"namespace_name", "persistent_volume_name", "duration", "disk_type", "cost_per_hour", "claim_name", "disk_size"},
 	)
 )
 
@@ -109,18 +110,22 @@ func Watch(clientset *kubernetes.Clientset) {
 		persistentVolume.Claim.Name = pv.Spec.ClaimRef.Name
 		persistentVolume.Claim.Namespace = pv.Spec.ClaimRef.Namespace
 		persistentVolume.Claim.Kind = pv.Spec.ClaimRef.Kind
-		persistentVolume.CostPerGbHour = price.DiskPricePerHour(persistentVolume.SpecStorageClassName)
+		persistentVolume.CostPerGbHour = price.DiskPricePerHour(persistentVolume.SpecStorageClassName) / 30 / 24
+
+		// Calculate disk cost
+		diskCostPerHour := (float64(persistentVolume.Capacity) / 1000000000) * persistentVolume.CostPerGbHour
+		diskCostPerMinute := diskCostPerHour / 60
 
 		// Switch on events
 		switch event.Type {
 		case watch.Added:
 			glog.V(3).Infof("Added - PVC Name: %s", pv.Name)
-			PersistentVolumeCostMetric.With(prometheus.Labels{"namespace_name": persistentVolume.Claim.Namespace, "persistent_volume_name": persistentVolume.Name, "duration": "minute", "disk_type": persistentVolume.SpecStorageClassName, "cost_per_hour": fmt.Sprintf("%f", persistentVolume.CostPerGbHour), "claim_name": persistentVolume.Claim.Name}).Add(persistentVolume.CostPerGbHour / 60)
+			PersistentVolumeCostMetric.With(prometheus.Labels{"namespace_name": persistentVolume.Claim.Namespace, "persistent_volume_name": persistentVolume.Name, "duration": "minute", "disk_type": persistentVolume.SpecStorageClassName, "cost_per_hour": fmt.Sprintf("%f", persistentVolume.CostPerGbHour), "claim_name": persistentVolume.Claim.Name, "disk_size": strconv.FormatInt(persistentVolume.Capacity, 10)}).Add(diskCostPerMinute)
 		case watch.Modified:
 			glog.V(3).Infof("Modified - PVC Name: %s", pv.Name)
 		case watch.Deleted:
 			glog.V(3).Infof("Deleted - PVC Name: %s", pv.Name)
-			PersistentVolumeCostMetric.Delete(prometheus.Labels{"namespace_name": persistentVolume.Claim.Namespace, "persistent_volume_name": persistentVolume.Name, "duration": "minute", "disk_type": persistentVolume.SpecStorageClassName, "cost_per_hour": fmt.Sprintf("%f", persistentVolume.CostPerGbHour), "claim_name": persistentVolume.Claim.Name})
+			PersistentVolumeCostMetric.Delete(prometheus.Labels{"namespace_name": persistentVolume.Claim.Namespace, "persistent_volume_name": persistentVolume.Name, "duration": "minute", "disk_type": persistentVolume.SpecStorageClassName, "cost_per_hour": fmt.Sprintf("%f", persistentVolume.CostPerGbHour), "claim_name": persistentVolume.Claim.Name, "disk_size": strconv.FormatInt(persistentVolume.Capacity, 10)})
 		case watch.Error:
 			glog.V(3).Infof("Error - PVC Name: %s", pv.Name)
 		}
