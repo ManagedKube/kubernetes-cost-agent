@@ -1,6 +1,10 @@
 package namespace
 
-import "github.com/prometheus/client_golang/prometheus"
+import (
+	"fmt"
+
+	"github.com/prometheus/client_golang/prometheus"
+)
 
 var cost Namespace
 
@@ -37,6 +41,7 @@ func Subtract(namespace string, newCost float64) {
 
 func Export() {
 	for _, n := range cost.cost {
+		fmt.Println(n.Name)
 		NamespaceCost.With(prometheus.Labels{"namespace_name": n.Name, "duration": "minute"}).Add(n.Cost)
 	}
 }

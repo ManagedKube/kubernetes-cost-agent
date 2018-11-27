@@ -15,6 +15,7 @@ func Update(clientset *kubernetes.Clientset) {
 	k8sNode.Register()
 	k8sPod.Register()
 	k8sPersistentVolume.Register()
+	//k8sNamespace.Register()
 
 	go k8sNode.Watch(clientset)
 	time.Sleep(5 * time.Second)
