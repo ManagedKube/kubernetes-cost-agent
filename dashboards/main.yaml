@@ -36,7 +36,7 @@ data:
             "#d44a3a"
           ],
           "datasource": "prometheus",
-          "decimals": 2,
+          "decimals": 6,
           "format": "currencyUSD",
           "gauge": {
             "maxValue": 100,
@@ -89,7 +89,7 @@ data:
           "targets": [
             {
               "$$hashKey": "object:809",
-              "expr": "sum(increase(mk_pod_cost{duration=\"minute\"}[30d])>0)",
+              "expr": "sum(mk_pod_cost) * 60 * 24 *30",
               "format": "time_series",
               "instant": true,
               "interval": "",
@@ -99,7 +99,7 @@ data:
           ],
           "thresholds": "",
           "timeFrom": "30d",
-          "title": "Total Cost - Last 30 Days",
+          "title": "Total Compute Cost 30 Days",
           "type": "singlestat",
           "valueFontSize": "80%",
           "valueMaps": [
@@ -121,7 +121,7 @@ data:
             "#d44a3a"
           ],
           "datasource": "prometheus",
-          "decimals": 2,
+          "decimals": 12,
           "format": "currencyUSD",
           "gauge": {
             "maxValue": 100,
@@ -174,7 +174,7 @@ data:
           "targets": [
             {
               "$$hashKey": "object:809",
-              "expr": "sum(increase(mk_pod_cost{duration=\"minute\"}[24h])>0)",
+              "expr": "sum(mk_pod_cost) * 60 * 24",
               "format": "time_series",
               "instant": true,
               "intervalFactor": 1,
@@ -183,7 +183,7 @@ data:
           ],
           "thresholds": "",
           "timeFrom": "24h",
-          "title": "Total Cost - Last 24 Hours",
+          "title": "Total Compute Cost 24 Hours",
           "type": "singlestat",
           "valueFontSize": "80%",
           "valueMaps": [
@@ -233,7 +233,7 @@ data:
           "targets": [
             {
               "$$hashKey": "object:1856",
-              "expr": "sum(increase(mk_pod_cost{duration=\"minute\"}[1h])) by (namespace_name)",
+              "expr": "sum(mk_pod_cost{duration=\"minute\"}) by (namespace_name) * 60 * 24",
               "format": "time_series",
               "instant": false,
               "interval": "",
@@ -244,7 +244,7 @@ data:
           "thresholds": [],
           "timeFrom": "30d",
           "timeShift": null,
-          "title": "Cost: Last 30 Days",
+          "title": "Compute Cost Per Day",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -319,7 +319,7 @@ data:
           "targets": [
             {
               "$$hashKey": "object:1856",
-              "expr": "sum(increase(mk_pod_cost{duration=\"minute\"}[1h])) by (namespace_name)",
+              "expr": "sum(mk_pod_cost{duration=\"minute\"}) by (namespace_name) * 60",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
@@ -329,7 +329,7 @@ data:
           "thresholds": [],
           "timeFrom": "24h",
           "timeShift": null,
-          "title": "Cost: Last 24 Hours",
+          "title": "Compute Cost Per Hour",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -372,127 +372,9 @@ data:
           "fontSize": "100%",
           "gridPos": {
             "h": 9,
-            "w": 12,
-            "x": 0,
-            "y": 14
-          },
-          "hideTimeOverride": false,
-          "id": 17,
-          "links": [],
-          "pageSize": null,
-          "scroll": true,
-          "showHeader": true,
-          "sort": {
-            "col": 0,
-            "desc": true
-          },
-          "styles": [
-            {
-              "$$hashKey": "object:1360",
-              "alias": "Time",
-              "dateFormat": "YYYY-MM-DD HH:mm:ss",
-              "pattern": "Time",
-              "type": "date"
-            },
-            {
-              "$$hashKey": "object:1361",
-              "alias": "",
-              "colorMode": null,
-              "colors": [
-                "rgba(245, 54, 54, 0.9)",
-                "rgba(237, 129, 40, 0.89)",
-                "rgba(50, 172, 45, 0.97)"
-              ],
-              "decimals": 2,
-              "pattern": "/.*/",
-              "thresholds": [],
-              "type": "number",
-              "unit": "short"
-            }
-          ],
-          "targets": [
-            {
-              "$$hashKey": "object:489",
-              "expr": "sum(increase(mk_pod_cost{duration=\"minute\"}[30d])) by (namespace_name) > 0",
-              "format": "table",
-              "instant": true,
-              "interval": "",
-              "intervalFactor": 1,
-              "refId": "A"
-            }
-          ],
-          "timeFrom": "30d",
-          "title": "Cost: Last 30 Days",
-          "transform": "table",
-          "type": "table"
-        },
-        {
-          "columns": [],
-          "datasource": "prometheus",
-          "fontSize": "100%",
-          "gridPos": {
-            "h": 9,
-            "w": 12,
-            "x": 12,
-            "y": 14
-          },
-          "id": 18,
-          "links": [],
-          "pageSize": null,
-          "scroll": true,
-          "showHeader": true,
-          "sort": {
-            "col": 0,
-            "desc": true
-          },
-          "styles": [
-            {
-              "$$hashKey": "object:994",
-              "alias": "Time",
-              "dateFormat": "YYYY-MM-DD HH:mm:ss",
-              "pattern": "Time",
-              "type": "date"
-            },
-            {
-              "$$hashKey": "object:995",
-              "alias": "",
-              "colorMode": null,
-              "colors": [
-                "rgba(245, 54, 54, 0.9)",
-                "rgba(237, 129, 40, 0.89)",
-                "rgba(50, 172, 45, 0.97)"
-              ],
-              "decimals": 2,
-              "pattern": "/.*/",
-              "thresholds": [],
-              "type": "number",
-              "unit": "short"
-            }
-          ],
-          "targets": [
-            {
-              "$$hashKey": "object:489",
-              "expr": "sum(increase(mk_pod_cost{duration=\"minute\"}[24h])) by (namespace_name) > 0 ",
-              "format": "table",
-              "interval": "24h",
-              "intervalFactor": 1,
-              "refId": "A"
-            }
-          ],
-          "timeFrom": "24h",
-          "title": "Cost: Last 24 Hours",
-          "transform": "table",
-          "type": "table"
-        },
-        {
-          "columns": [],
-          "datasource": "prometheus",
-          "fontSize": "100%",
-          "gridPos": {
-            "h": 9,
             "w": 24,
             "x": 0,
-            "y": 23
+            "y": 14
           },
           "id": 24,
           "links": [],
@@ -505,30 +387,17 @@ data:
           },
           "styles": [
             {
+              "$$hashKey": "object:1677",
               "alias": "Time",
               "dateFormat": "YYYY-MM-DD HH:mm:ss",
               "pattern": "Time",
               "type": "date"
-            },
-            {
-              "alias": "",
-              "colorMode": null,
-              "colors": [
-                "rgba(245, 54, 54, 0.9)",
-                "rgba(237, 129, 40, 0.89)",
-                "rgba(50, 172, 45, 0.97)"
-              ],
-              "decimals": 2,
-              "pattern": "/.*/",
-              "thresholds": [],
-              "type": "number",
-              "unit": "short"
             }
           ],
           "targets": [
             {
               "$$hashKey": "object:1070",
-              "expr": "sum(increase(mk_node_cost{duration=\"minute\"}[24h])) by (node_name, instance_type, cost_per_hour) > 0 ",
+              "expr": "sum(mk_node_cost{duration=\"minute\"}) by (node_name, instance_type, cost_per_hour)",
               "format": "table",
               "instant": true,
               "intervalFactor": 1,
@@ -551,7 +420,7 @@ data:
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 32
+            "y": 23
           },
           "id": 26,
           "legend": {
@@ -578,7 +447,7 @@ data:
           "targets": [
             {
               "$$hashKey": "object:1718",
-              "expr": "sum(increase(mk_node_cost{duration=\"minute\"}[1h])) by (node_name)",
+              "expr": "sum(mk_node_cost{duration=\"minute\"}) by (node_name)",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "{{ node_name }}",
@@ -586,7 +455,7 @@ data:
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
+          "timeFrom": "24h",
           "timeShift": null,
           "title": "Nodes",
           "tooltip": {
@@ -645,10 +514,10 @@ data:
             "thresholdMarkers": true
           },
           "gridPos": {
-            "h": 9,
+            "h": 5,
             "w": 12,
             "x": 12,
-            "y": 32
+            "y": 23
           },
           "id": 28,
           "interval": null,
@@ -688,13 +557,97 @@ data:
           "targets": [
             {
               "$$hashKey": "object:181",
-              "expr": "sum(mk_node_cost)",
+              "expr": "sum(mk_node_cost) * 60 * 24",
               "format": "time_series",
               "intervalFactor": 1,
               "refId": "A"
             }
           ],
           "thresholds": "",
+          "timeFrom": "24h",
+          "title": "Total Node Cost",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "avg"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "#299c46",
+            "rgba(237, 129, 40, 0.89)",
+            "#d44a3a"
+          ],
+          "datasource": "prometheus",
+          "decimals": 6,
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 12,
+            "x": 12,
+            "y": 28
+          },
+          "id": 32,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "tableColumn": "",
+          "targets": [
+            {
+              "$$hashKey": "object:181",
+              "expr": "sum(mk_node_cost) * 60 * 24 * 30",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "refId": "A"
+            }
+          ],
+          "thresholds": "",
+          "timeFrom": "30d",
           "title": "Total Node Cost",
           "type": "singlestat",
           "valueFontSize": "80%",
@@ -718,7 +671,7 @@ data:
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 41
+            "y": 32
           },
           "id": 29,
           "legend": {
@@ -745,7 +698,7 @@ data:
           "targets": [
             {
               "$$hashKey": "object:1718",
-              "expr": "sum(increase(mk_persisten_volume_cost{duration=\"minute\"}[1h])) by (namespace_name)\n",
+              "expr": "sum(mk_persisten_volume_cost{duration=\"minute\"}) by (namespace_name)",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "{{ namespace_name }}",
@@ -753,7 +706,7 @@ data:
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
+          "timeFrom": "24h",
           "timeShift": null,
           "title": "Persistent Volumes",
           "tooltip": {
@@ -812,10 +765,10 @@ data:
             "thresholdMarkers": true
           },
           "gridPos": {
-            "h": 9,
+            "h": 4,
             "w": 12,
             "x": 12,
-            "y": 41
+            "y": 32
           },
           "id": 30,
           "interval": null,
@@ -855,13 +808,97 @@ data:
           "targets": [
             {
               "$$hashKey": "object:181",
-              "expr": "sum(mk_persisten_volume_cost)",
+              "expr": "sum(mk_persisten_volume_cost) * 60 * 24",
               "format": "time_series",
               "intervalFactor": 1,
               "refId": "A"
             }
           ],
           "thresholds": "",
+          "timeFrom": "24h",
+          "title": "Total Persistent Volume Cost",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "avg"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "#299c46",
+            "rgba(237, 129, 40, 0.89)",
+            "#d44a3a"
+          ],
+          "datasource": "prometheus",
+          "decimals": 6,
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 12,
+            "x": 12,
+            "y": 36
+          },
+          "id": 31,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "tableColumn": "",
+          "targets": [
+            {
+              "$$hashKey": "object:181",
+              "expr": "sum(mk_persisten_volume_cost) * 60 * 24 * 30",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "refId": "A"
+            }
+          ],
+          "thresholds": "",
+          "timeFrom": "30d",
           "title": "Total Persistent Volume Cost",
           "type": "singlestat",
           "valueFontSize": "80%",
@@ -880,7 +917,7 @@ data:
             "h": 4,
             "w": 24,
             "x": 0,
-            "y": 50
+            "y": 41
           },
           "id": 12,
           "mode": "markdown",
