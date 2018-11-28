@@ -1,74 +1,41 @@
 package node
 
 import (
-	"strconv"
+	"fmt"
+	"log"
 
 	"github.com/golang/glog"
+	"github.com/prometheus/client_golang/prometheus"
 	"k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes"
 	"managedkube.com/kube-cost-agent/pkg/price"
 )
 
 var nodeList NodeList
 
-// Retrieves all of the nodes in a k8s cluster
-func AllNodes(clientset *kubernetes.Clientset) (NodeList, error) {
+var (
+	NodeCostMetric = prometheus.NewCounterVec(prometheus.CounterOpts{
+		Name: "mk_node_cost",
+		Help: "ManagedKube - Cost of the node.",
+	},
+		[]string{"node_name", "duration", "instance_type", "cost_per_hour"},
+	)
+)
 
-	// Resetting NodeList
-	nodeList.Node = nodeList.Node[:0]
-
-	nodes, err := getNodes(clientset)
-	if err != nil {
-		glog.Errorf("Failed to retrieve nodes: %v", err)
-		return nodeList, err
-	}
-
-	for _, n := range nodes.Items {
-		//PrettyPrint(n.Status.Capacity)
-		glog.V(3).Infof("Found nodes: %s/%s", n.Name, n.UID)
-		//fmt.Println(reflect.TypeOf(n.Labels))
-
-		var node NodeInfo
-		node.Name = n.Name
-		node.CpuCapacity = n.Status.Capacity.Cpu().MilliValue()
-		node.MemoryCapacity = n.Status.Capacity.Memory().Value()
-		node.Region = getLabelValue(n.Labels, "failure-domain.beta.kubernetes.io/region")
-		node.Zone = getLabelValue(n.Labels, "failure-domain.beta.kubernetes.io/zone")
-		node.InstanceType = getLabelValue(n.Labels, "beta.kubernetes.io/instance-type")
-		node.ReduceCostInstance = getLabelValue(n.Labels, "cloud.google.com/gke-preemptible")
-		node.ComputeCostPerHour = price.NodePricePerHour(node.Region, node.InstanceType, node.ReduceCostInstance)
-
-		glog.V(3).Infof("Node CPU Capacity: %s", strconv.FormatInt(node.CpuCapacity, 10))
-		glog.V(3).Infof("Node Memory Capacity: %s", strconv.FormatInt(node.MemoryCapacity, 10))
-		glog.V(3).Infof("Node HourlyCost: %v", node.ComputeCostPerHour)
-
-		nodeList.Node = append(nodeList.Node, node)
-
-	}
-
-	return nodeList, nil
-}
-
-// Get list of nodes from k8s API
-func getNodes(clientset *kubernetes.Clientset) (*v1.NodeList, error) {
-
-	// list nodes
-	nodes, err := clientset.CoreV1().Nodes().List(metav1.ListOptions{})
-	if err != nil {
-		glog.Errorf("Failed to retrieve nodes: %v", err)
-		return nil, err
-	}
-
-	return nodes, nil
+// Registers the Prometheus metrics
+func Register() {
+	// Metrics have to be registered to be exposed:
+	prometheus.MustRegister(NodeCostMetric)
 }
 
 // From the node list return the NodeInfo which matches the nodeName
-func GetNodeInfo(nodes NodeList, nodeName string) (NodeInfo, error) {
+func GetNodeInfo(nodeName string) (NodeInfo, error) {
 
 	info := NodeInfo{}
 
-	for _, n := range nodes.Node {
+	for _, n := range nodeList.Node {
 		if n.Name == nodeName {
 			info = n
 		}
@@ -88,4 +55,50 @@ func getLabelValue(labels map[string]string, labelName string) string {
 	}
 
 	return labelKey
+}
+
+func Watch(clientset *kubernetes.Clientset) {
+
+	watcher, err := clientset.CoreV1().Nodes().Watch(metav1.ListOptions{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Start channel to watch
+	ch := watcher.ResultChan()
+
+	// Loop through events
+	for event := range ch {
+		n, ok := event.Object.(*v1.Node)
+		if !ok {
+			log.Fatal("unexpected type")
+		}
+		// fmt.Println(reflect.TypeOf(event))
+		// fmt.Println(event.Type)
+
+		var node NodeInfo
+		node.Name = n.Name
+		node.CpuCapacity = n.Status.Capacity.Cpu().MilliValue()
+		node.MemoryCapacity = n.Status.Capacity.Memory().Value()
+		node.Region = getLabelValue(n.Labels, "failure-domain.beta.kubernetes.io/region")
+		node.Zone = getLabelValue(n.Labels, "failure-domain.beta.kubernetes.io/zone")
+		node.InstanceType = getLabelValue(n.Labels, "beta.kubernetes.io/instance-type")
+		node.ReduceCostInstance = getLabelValue(n.Labels, "cloud.google.com/gke-preemptible")
+		node.ComputeCostPerHour = price.NodePricePerHour(node.Region, node.InstanceType, node.ReduceCostInstance)
+
+		// Switch on events
+		switch event.Type {
+		case watch.Added:
+			glog.V(3).Infof("Added - Node Name: %s", node.Name)
+			nodeList.Node = append(nodeList.Node, node)
+			NodeCostMetric.With(prometheus.Labels{"node_name": node.Name, "duration": "minute", "instance_type": node.InstanceType, "cost_per_hour": fmt.Sprintf("%f", node.ComputeCostPerHour)}).Add(node.ComputeCostPerHour / 60)
+		case watch.Modified:
+			glog.V(3).Infof("Modified - Node Name: %s", node.Name)
+		case watch.Deleted:
+			glog.V(3).Infof("Deleted - Node Name: %s", node.Name)
+			NodeCostMetric.Delete(prometheus.Labels{"node_name": node.Name, "duration": "minute", "instance_type": node.InstanceType, "cost_per_hour": fmt.Sprintf("%f", node.ComputeCostPerHour)})
+		case watch.Error:
+			glog.V(3).Infof("Error - Node Name: %s", node.Name)
+		}
+	}
 }

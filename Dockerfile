@@ -7,14 +7,21 @@ WORKDIR $GOPATH/src/managedkube.com/kube-cost-agent/
 RUN go get -d -v
 
 # build
-RUN go build -o /go/bin/agent
+RUN CGO_ENABLED=0 GOOS=linux go build -o /go/bin/agent
 
-ENTRYPOINT ["/go/bin/agent"]
+# Pricing sheet's folders
+RUN mkdir -p /pkg/price
+RUN cp -a $GOPATH/src/managedkube.com/kube-cost-agent/pkg/price/prices /pkg/price/
 
-# # start from scratch
-# FROM scratch
-#
-# # Copy our static executable
-# COPY --from=builder /go/bin/mk-agent /mk-agent
-# RUN chmod 777 /mk-agent
-# ENTRYPOINT ["/mk-agent"]
+####################
+# start from scratch
+####################
+FROM scratch
+
+# Copy our static executable
+COPY --from=builder /go/bin/agent /mk-agent
+
+# Copy pricing sheets
+COPY --from=builder /pkg /pkg
+
+ENTRYPOINT ["/mk-agent"]
