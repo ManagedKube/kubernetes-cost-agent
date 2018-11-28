@@ -102,7 +102,7 @@ data:
           "targets": [
             {
               "$$hashKey": "object:809",
-              "expr": "(sum(mk_pod_cost{duration=\"minute\"}) * 60 * 24 * 30) + \n(sum(mk_node_cost{duration=\"minute\"}) * 60 * 24 * 30) + \n(sum(mk_persisten_volume_cost{duration=\"minute\"}) * 60 * 24 * 30)",
+              "expr": "(sum(mk_pod_cost{duration=\"minute\"}) * 60 * 24 * 30) + \n(sum(mk_persisten_volume_cost{duration=\"minute\"}) * 60 * 24 * 30)",
               "format": "time_series",
               "instant": true,
               "intervalFactor": 1,
@@ -186,7 +186,7 @@ data:
           "targets": [
             {
               "$$hashKey": "object:809",
-              "expr": "(sum(mk_pod_cost{duration=\"minute\"}) * 60 * 24) + \n(sum(mk_node_cost{duration=\"minute\"}) * 60 * 24) + \n(sum(mk_persisten_volume_cost{duration=\"minute\"}) * 60 * 24)",
+              "expr": "(sum(mk_pod_cost{duration=\"minute\"}) * 60 * 24) + \n(sum(mk_persisten_volume_cost{duration=\"minute\"}) * 60 * 24)",
               "format": "time_series",
               "instant": true,
               "intervalFactor": 1,
@@ -208,7 +208,7 @@ data:
           "valueName": "max"
         },
         {
-          "content": "# Compute Cost",
+          "content": "# Pod Cost",
           "gridPos": {
             "h": 2,
             "w": 24,
@@ -438,7 +438,7 @@ data:
           "thresholds": [],
           "timeFrom": "30d",
           "timeShift": null,
-          "title": "Compute Cost Per Day",
+          "title": "Pod Cost Per Day",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -523,7 +523,7 @@ data:
           "thresholds": [],
           "timeFrom": "24h",
           "timeShift": null,
-          "title": "Compute Cost Per Hour",
+          "title": "Pod Cost Per Hour",
           "tooltip": {
             "shared": true,
             "sort": 0,
