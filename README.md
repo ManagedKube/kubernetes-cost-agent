@@ -10,11 +10,11 @@ The metrics are exported on the HTTP endpoint /metrics on the listening port (de
 
 ## Building
 
-'''
+```
 go mod init
 go run main.go --kubeconfig ~/.kube/config
 go build .
-'''
+```
 
 ### Test
 
