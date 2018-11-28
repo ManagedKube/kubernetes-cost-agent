@@ -64,10 +64,13 @@ func GetAllPods(clientset *kubernetes.Clientset) (*v1.PodList, error) {
 
 func Watch(clientset *kubernetes.Clientset) {
 
+	timeout := int64(99999999)
+
 	// setup list options
 	listOptions := metav1.ListOptions{
-		LabelSelector: "",
-		FieldSelector: "",
+		LabelSelector:  "",
+		FieldSelector:  "",
+		TimeoutSeconds: &timeout,
 	}
 
 	watcher, err := clientset.CoreV1().Pods("").Watch(listOptions)

@@ -59,7 +59,9 @@ func getLabelValue(labels map[string]string, labelName string) string {
 
 func Watch(clientset *kubernetes.Clientset) {
 
-	watcher, err := clientset.CoreV1().Nodes().Watch(metav1.ListOptions{})
+	timeout := int64(99999999)
+
+	watcher, err := clientset.CoreV1().Nodes().Watch(metav1.ListOptions{TimeoutSeconds: &timeout})
 	if err != nil {
 		log.Fatal(err)
 	}
