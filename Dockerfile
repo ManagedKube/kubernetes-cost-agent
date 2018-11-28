@@ -1,7 +1,7 @@
 FROM golang:1.11.0-stretch as builder
 
-COPY . $GOPATH/src/managedkube.com/kube-cost-agent/
-WORKDIR $GOPATH/src/managedkube.com/kube-cost-agent/
+COPY . $GOPATH/src/managedkube.com/kubernetes-cost-agent/
+WORKDIR $GOPATH/src/managedkube.com/kubernetes-cost-agent/
 
 # get dependancies
 RUN go get -d -v
@@ -11,7 +11,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /go/bin/agent
 
 # Pricing sheet's folders
 RUN mkdir -p /pkg/price
-RUN cp -a $GOPATH/src/managedkube.com/kube-cost-agent/pkg/price/prices /pkg/price/
+RUN cp -a $GOPATH/src/managedkube.com/kubernetes-cost-agent/pkg/price/prices /pkg/price/
 
 ####################
 # start from scratch

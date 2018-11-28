@@ -10,8 +10,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes"
-	"managedkube.com/kube-cost-agent/pkg/cost"
-	k8sNode "managedkube.com/kube-cost-agent/pkg/metrics/k8s/node"
+	"managedkube.com/kubernetes-cost-agent/pkg/cost"
+	k8sNode "managedkube.com/kubernetes-cost-agent/pkg/metrics/k8s/node"
 )
 
 var (

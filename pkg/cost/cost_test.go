@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"testing"
 
-	k8sNode "managedkube.com/kube-cost-agent/pkg/metrics/k8s/node"
+	k8sNode "managedkube.com/kubernetes-cost-agent/pkg/metrics/k8s/node"
 )
 
 func TestCalculatePodCost(t *testing.T) {

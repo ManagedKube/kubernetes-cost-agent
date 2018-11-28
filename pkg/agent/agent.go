@@ -5,9 +5,9 @@ import (
 
 	"k8s.io/client-go/kubernetes"
 
-	k8sNode "managedkube.com/kube-cost-agent/pkg/metrics/k8s/node"
-	k8sPersistentVolume "managedkube.com/kube-cost-agent/pkg/metrics/k8s/persistentVolume"
-	k8sPod "managedkube.com/kube-cost-agent/pkg/metrics/k8s/pod"
+	k8sNode "managedkube.com/kubernetes-cost-agent/pkg/metrics/k8s/node"
+	k8sPersistentVolume "managedkube.com/kubernetes-cost-agent/pkg/metrics/k8s/persistentVolume"
+	k8sPod "managedkube.com/kubernetes-cost-agent/pkg/metrics/k8s/pod"
 )
 
 func Update(clientset *kubernetes.Clientset) {

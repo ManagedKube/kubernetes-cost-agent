@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"managedkube.com/kube-cost-agent/pkg/agent"
+	"managedkube.com/kubernetes-cost-agent/pkg/agent"
 
 	"github.com/golang/glog"
 	"github.com/prometheus/client_golang/prometheus/promhttp"

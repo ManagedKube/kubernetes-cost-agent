@@ -1,16 +1,16 @@
-Kube Cost Agent
+Kubernetes Cost Agent
 ================
 
-cd ~/go/src/managedkube.com/kube-cost-agent
+ManagedKube’s Kubernetes Cost Attribution is an application to help you understand the cost of your Kubernetes clusters, from what each namespace or pod costs to how much disks or network traffic in the cluster costs, so you can manage your budget and optimize your cloud spend.
 
-docker run -it -v ${PWD}:/go/src -v /home/g44/Downloads/gcp-kubeconfig:/root/.kube/config -v ~/Downloads:/opt/Downloads golang:1.11.0-stretch bash
+This is a service that listens to the Kubernetes API server and generates metrics about cost related items that a cluster will incur.
+
+The metrics are exported on the HTTP endpoint /metrics on the listening port (default 9101). They are served as plaintext. They are designed to be consumed either by Prometheus itself or by a scraper that is compatible with scraping a Prometheus client endpoint. You can also open /metrics in a browser to see the raw metrics.
+
+
+## Building
 
 '''
-cd ~/go/src/managedkube.com/kube-cost-agent
-
-#export GOROOT=/home/g44/go
-#export GOPATH=/home/g44/Documents/managed-kubernetes/kubernetes-cost-attribution/golang/src
-
 go mod init
 go run main.go --kubeconfig ~/.kube/config
 go build .
