@@ -614,7 +614,7 @@ data:
               "expr": "sum(mk_node_cost{duration=\"minute\"}) by (node_name)",
               "format": "time_series",
               "intervalFactor": 1,
-              "legendFormat": "{{ node_name }}",
+              "legendFormat": "",
               "refId": "A"
             }
           ],
@@ -920,8 +920,9 @@ data:
               "$$hashKey": "object:1718",
               "expr": "sum(mk_persisten_volume_cost{duration=\"minute\"}) by (namespace_name)",
               "format": "time_series",
+              "instant": false,
               "intervalFactor": 1,
-              "legendFormat": "{{ namespace_name }}",
+              "legendFormat": "",
               "refId": "A"
             }
           ],
