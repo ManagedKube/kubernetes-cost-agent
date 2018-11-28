@@ -1,0 +1,402 @@
+{
+  "aws": {
+    "ec2": {
+      "t2.micro": {
+        "memory": 1073741824,
+        "cpu": 1,
+        "hourly_cost": {
+          "on_demand": 0.0116,
+          "spot": 0.0035
+        }
+      },
+      "t2.nano": {
+        "memory": 536870912,
+        "cpu": 1,
+        "hourly_cost": {
+          "on_demand": 0.005,
+          "spot": 0.0065
+        }
+      },
+      "t2.small": {
+        "memory": 2147483648,
+        "cpu": 2,
+        "hourly_cost": {
+          "on_demand": 0.023,
+          "spot": 0.0069
+        }
+      },
+      "t2.medium": {
+        "memory": 4294967296,
+        "cpu": 4,
+        "hourly_cost": {
+          "on_demand": 0.0464,
+          "spot": 0.0139
+        }
+      },
+      "t2.large": {
+        "memory": 8589934592,
+        "cpu": 8,
+        "hourly_cost": {
+          "on_demand": 0.0928,
+          "spot": 0.0278
+        }
+      },
+      "t2.xlarge": {
+        "memory": 17179869184,
+        "cpu": 16,
+        "hourly_cost": {
+          "on_demand": 0.1856,
+          "spot": 0.0478
+        }
+      },
+      "t2.2xlarge": {
+        "memory": 34359738368,
+        "cpu": 32,
+        "hourly_cost": {
+          "on_demand": 0.3712,
+          "spot": 0.1114
+        }
+      },
+      "m4.large": {
+        "memory": 8075688000,
+        "cpu": 2,
+        "hourly_cost": {
+          "on_demand": 0.1,
+          "spot": 0.0401
+        }
+      },
+      "m4.xlarge": {
+        "memory": 16151376000,
+        "cpu": 4,
+        "hourly_cost": {
+          "on_demand": 0.2,
+          "spot": 0.0703
+        }
+      },
+      "m4.2xlarge": {
+        "memory": 34359738368,
+        "cpu": 4,
+        "hourly_cost": {
+          "on_demand": 0.4,
+          "spot": 0.1306
+        }
+      },
+      "m4.4xlarge": {
+        "memory": 68719476736,
+        "cpu": 16,
+        "hourly_cost": {
+          "on_demand": 0.8,
+          "spot": 0.4
+        }
+      },
+      "m4.10xlarge": {
+        "memory": 160438953472,
+        "cpu": 40,
+        "hourly_cost": {
+          "on_demand": 2,
+          "spot": 0.7
+        }
+      },
+      "m4.16xlarge": {
+        "memory": 256877906944,
+        "cpu": 64,
+        "hourly_cost": {
+          "on_demand": 3.2,
+          "spot": 1.05
+        }
+      },
+      "m5.large": {
+        "memory": 8589934592,
+        "cpu": 2,
+        "hourly_cost": {
+          "on_demand": 0.096,
+          "spot": 0.044
+        }
+      },
+      "m5.xlarge": {
+        "memory": 16384000000,
+        "cpu": 16,
+        "hourly_cost": {
+          "on_demand": 0.192,
+          "spot": 0.0799
+        }
+      },
+      "m5.2xlarge": {
+        "memory": 34359738368,
+        "cpu": 32,
+        "hourly_cost": {
+          "on_demand": 0.384,
+          "spot": 0.1816
+        }
+      },
+      "m5.4xlarge": {
+        "memory": 68719476736,
+        "cpu": 64,
+        "hourly_cost": {
+          "on_demand": 0.768,
+          "spot": 0.2666
+        }
+      },
+      "m5.12xlarge": {
+        "memory": 192438953472,
+        "cpu": 384,
+        "hourly_cost": {
+          "on_demand": 2.304,
+          "spot": 1.13
+        }
+      },
+      "m5.24xlarge": {
+        "memory": 384877906944,
+        "cpu": 96,
+        "hourly_cost": {
+          "on_demand": 4.608,
+          "spot": 1.57
+        }
+      },
+      "r4.xlarge": {
+        "memory": 32302752000,
+        "cpu": 4,
+        "hourly_cost": {
+          "on_demand": 0.266,
+          "spot": 0.14
+        }
+      },
+      "c4.xlarge": {
+        "memory": 7575688000,
+        "cpu": 4,
+        "hourly_cost": {
+          "on_demand": 0.199,
+          "spot": 0.09
+        }
+      }
+    }
+  },
+  "gcp": {
+    "instance": {
+      "n1-standard-1": {
+        "memory": 3753741824,
+        "cpu": 1,
+        "hourly_cost": {
+          "on_demand": 0.0475,
+          "spot": 0.01
+        }
+      },
+      "n1-standard-2": {
+        "memory": 7500741824,
+        "cpu": 2,
+        "hourly_cost": {
+          "on_demand": 0.95,
+          "spot": 0.02
+        }
+      },
+      "n1-standard-4": {
+        "memory": 15073741824,
+        "cpu": 4,
+        "hourly_cost": {
+          "on_demand": 0.19,
+          "spot": 0.04
+        }
+      },
+      "n1-standard-8": {
+        "memory": 30073741824,
+        "cpu": 8,
+        "hourly_cost": {
+          "on_demand": 0.38,
+          "spot": 0.08
+        }
+      },
+      "n1-standard-16": {
+        "memory": 60073741824,
+        "cpu": 16,
+        "hourly_cost": {
+          "on_demand": 0.76,
+          "spot": 0.16
+        }
+      },
+      "n1-standard-32": {
+        "memory": 120073741824,
+        "cpu": 32,
+        "hourly_cost": {
+          "on_demand": 1.52,
+          "spot": 0.32
+        }
+      },
+      "n1-standard-64": {
+        "memory": 240073741824,
+        "cpu": 64,
+        "hourly_cost": {
+          "on_demand": 3.04,
+          "spot": 0.64
+        }
+      },
+      "n1-standard-96": {
+        "memory": 360073741824,
+        "cpu": 96,
+        "hourly_cost": {
+          "on_demand": 4.56,
+          "spot": 0.96
+        }
+      },
+      "f1-micro": {
+        "memory": 600741824,
+        "cpu": 1,
+        "hourly_cost": {
+          "on_demand": 0.0076,
+          "spot": 0.0035
+        }
+      },
+      "g1-small": {
+        "memory": 1700741824,
+        "cpu": 1,
+        "hourly_cost": {
+          "on_demand": 0.0257,
+          "spot": 0.007
+        }
+      },
+      "n1-highmem-2": {
+        "memory": 13500741824,
+        "cpu": 2,
+        "hourly_cost": {
+          "on_demand": 0.1184,
+          "spot": 0.025
+        }
+      },
+      "n1-highmem-4": {
+        "memory": 26073741824,
+        "cpu": 4,
+        "hourly_cost": {
+          "on_demand": 0.2368,
+          "spot": 0.05
+        }
+      },
+      "n1-highmem-8": {
+        "memory": 52073741824,
+        "cpu": 8,
+        "hourly_cost": {
+          "on_demand": 0.4736,
+          "spot": 0.1
+        }
+      },
+      "n1-highmem-16": {
+        "memory": 104073741824,
+        "cpu": 16,
+        "hourly_cost": {
+          "on_demand": 0.9472,
+          "spot": 0.2
+        }
+      },
+      "n1-highmem-32": {
+        "memory": 208073741824,
+        "cpu": 32,
+        "hourly_cost": {
+          "on_demand": 1.8944,
+          "spot": 0.4
+        }
+      },
+      "n1-highmem-64": {
+        "memory": 416073741824,
+        "cpu": 64,
+        "hourly_cost": {
+          "on_demand": 3.7888,
+          "spot": 0.8
+        }
+      },
+      "n1-highmem-96": {
+        "memory": 624073741824,
+        "cpu": 96,
+        "hourly_cost": {
+          "on_demand": 5.6832,
+          "spot": 1.2
+        }
+      },
+      "n1-highcpu-2": {
+        "memory": 1800741824,
+        "cpu": 2,
+        "hourly_cost": {
+          "on_demand": 0.0709,
+          "spot": 0.015
+        }
+      },
+      "n1-highcpu-4": {
+        "memory": 3600741824,
+        "cpu": 4,
+        "hourly_cost": {
+          "on_demand": 0.1418,
+          "spot": 0.03
+        }
+      },
+      "n1-highcpu-8": {
+        "memory": 7200741824,
+        "cpu": 8,
+        "hourly_cost": {
+          "on_demand": 0.2836,
+          "spot": 0.06
+        }
+      },
+      "n1-highcpu-16": {
+        "memory": 14400741824,
+        "cpu": 16,
+        "hourly_cost": {
+          "on_demand": 0.5672,
+          "spot": 0.12
+        }
+      },
+      "n1-highcpu-32": {
+        "memory": 28073741824,
+        "cpu": 32,
+        "hourly_cost": {
+          "on_demand": 1.1344,
+          "spot": 0.24
+        }
+      },
+      "n1-highcpu-64": {
+        "memory": 57073741824,
+        "cpu": 64,
+        "hourly_cost": {
+          "on_demand": 2.2688,
+          "spot": 0.48
+        }
+      },
+      "n1-highcpu-96": {
+        "memory": 86400741824,
+        "cpu": 96,
+        "hourly_cost": {
+          "on_demand": 3.402,
+          "spot": 0.72
+        }
+      },
+      "n1-ultramem-40": {
+        "memory": 938800741824,
+        "cpu": 40,
+        "hourly_cost": {
+          "on_demand": 6.3039,
+          "spot": 1.3311
+        }
+      },
+      "n1-ultramem-80": {
+        "memory": 1922600741824,
+        "cpu": 80,
+        "hourly_cost": {
+          "on_demand": 12.6078,
+          "spot": 2.6622
+        }
+      },
+      "n1-ultramem-96": {
+        "memory": 1433200741824,
+        "cpu": 96,
+        "hourly_cost": {
+          "on_demand": 10.674,
+          "spot": 2.26
+        }
+      },
+      "n1-ultramem-160": {
+        "memory": 3844400741824,
+        "cpu": 160,
+        "hourly_cost": {
+          "on_demand": 25.2156,
+          "spot": 5.3244
+        }
+      }
+    }
+  }
+}
