@@ -81,7 +81,9 @@ func Register() {
 
 func Watch(clientset *kubernetes.Clientset) {
 
-	watcher, err := clientset.CoreV1().PersistentVolumes().Watch(metav1.ListOptions{})
+	timeout := int64(99999999)
+
+	watcher, err := clientset.CoreV1().PersistentVolumes().Watch(metav1.ListOptions{TimeoutSeconds: &timeout})
 	if err != nil {
 		log.Fatal(err)
 	}
