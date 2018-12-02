@@ -208,12 +208,184 @@ data:
           "valueName": "max"
         },
         {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "prometheus",
+          "fill": 1,
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 0,
+            "y": 7
+          },
+          "id": 41,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "$$hashKey": "object:1856",
+              "expr": "(sum(mk_pod_cost{duration=\"minute\"}) * 60 * 24 * 30) + \n(sum(mk_persisten_volume_cost{duration=\"minute\"}) * 60 * 24 * 30)",
+              "format": "time_series",
+              "instant": false,
+              "interval": "",
+              "intervalFactor": 1,
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": "30d",
+          "timeShift": null,
+          "title": "Total Cost 30 Days",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "prometheus",
+          "fill": 1,
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 12,
+            "y": 7
+          },
+          "id": 42,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "$$hashKey": "object:1856",
+              "expr": "(sum(mk_pod_cost{duration=\"minute\"}) * 60 * 24 * 30) + \n(sum(mk_persisten_volume_cost{duration=\"minute\"}) * 60 * 24 * 30)",
+              "format": "time_series",
+              "instant": false,
+              "interval": "",
+              "intervalFactor": 1,
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": "24h",
+          "timeShift": null,
+          "title": "Total Cost 24 Hours",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
           "content": "# Pod Cost",
           "gridPos": {
             "h": 2,
             "w": 24,
             "x": 0,
-            "y": 7
+            "y": 16
           },
           "id": 37,
           "mode": "markdown",
@@ -243,7 +415,7 @@ data:
             "h": 5,
             "w": 12,
             "x": 0,
-            "y": 9
+            "y": 18
           },
           "id": 22,
           "interval": null,
@@ -328,7 +500,7 @@ data:
             "h": 5,
             "w": 12,
             "x": 12,
-            "y": 9
+            "y": 18
           },
           "id": 14,
           "interval": null,
@@ -400,7 +572,7 @@ data:
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 14
+            "y": 23
           },
           "id": 20,
           "legend": {
@@ -486,7 +658,7 @@ data:
             "h": 9,
             "w": 12,
             "x": 12,
-            "y": 14
+            "y": 23
           },
           "id": 21,
           "legend": {
@@ -566,7 +738,7 @@ data:
             "h": 2,
             "w": 24,
             "x": 0,
-            "y": 23
+            "y": 32
           },
           "id": 38,
           "mode": "markdown",
@@ -584,7 +756,7 @@ data:
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 25
+            "y": 34
           },
           "id": 26,
           "legend": {
@@ -681,7 +853,7 @@ data:
             "h": 5,
             "w": 12,
             "x": 12,
-            "y": 25
+            "y": 34
           },
           "id": 28,
           "interval": null,
@@ -764,7 +936,7 @@ data:
             "h": 4,
             "w": 12,
             "x": 12,
-            "y": 30
+            "y": 39
           },
           "id": 32,
           "interval": null,
@@ -832,7 +1004,7 @@ data:
             "h": 9,
             "w": 24,
             "x": 0,
-            "y": 34
+            "y": 43
           },
           "id": 24,
           "links": [],
@@ -873,7 +1045,7 @@ data:
             "h": 2,
             "w": 24,
             "x": 0,
-            "y": 43
+            "y": 52
           },
           "id": 39,
           "mode": "markdown",
@@ -891,7 +1063,7 @@ data:
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 45
+            "y": 54
           },
           "id": 29,
           "legend": {
@@ -989,7 +1161,7 @@ data:
             "h": 4,
             "w": 12,
             "x": 12,
-            "y": 45
+            "y": 54
           },
           "id": 30,
           "interval": null,
@@ -1072,7 +1244,7 @@ data:
             "h": 5,
             "w": 12,
             "x": 12,
-            "y": 49
+            "y": 58
           },
           "id": 31,
           "interval": null,
@@ -1140,7 +1312,7 @@ data:
             "h": 9,
             "w": 24,
             "x": 0,
-            "y": 54
+            "y": 63
           },
           "id": 40,
           "links": [],
@@ -1181,7 +1353,7 @@ data:
             "h": 4,
             "w": 24,
             "x": 0,
-            "y": 63
+            "y": 72
           },
           "id": 12,
           "mode": "markdown",
