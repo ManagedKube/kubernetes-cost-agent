@@ -14,7 +14,7 @@ import (
 	"managedkube.com/kubernetes-cost-agent/pkg/price"
 )
 
-// var pvList PersistentVolumeList
+var pvList PersistentVolumeList
 
 var (
 	PersistentVolumeCostMetric = prometheus.NewCounterVec(prometheus.CounterOpts{
@@ -123,13 +123,38 @@ func Watch(clientset *kubernetes.Clientset) {
 		case watch.Added:
 			glog.V(3).Infof("Added - PVC Name: %s", pv.Name)
 			PersistentVolumeCostMetric.With(prometheus.Labels{"namespace_name": persistentVolume.Claim.Namespace, "persistent_volume_name": persistentVolume.Name, "duration": "minute", "disk_type": persistentVolume.SpecStorageClassName, "cost_per_hour": fmt.Sprintf("%f", persistentVolume.CostPerGbHour), "claim_name": persistentVolume.Claim.Name, "disk_size": strconv.FormatInt(persistentVolume.Capacity, 10)}).Add(diskCostPerMinute)
+			addToList(persistentVolume)
 		case watch.Modified:
 			glog.V(3).Infof("Modified - PVC Name: %s", pv.Name)
 		case watch.Deleted:
 			glog.V(3).Infof("Deleted - PVC Name: %s", pv.Name)
 			PersistentVolumeCostMetric.Delete(prometheus.Labels{"namespace_name": persistentVolume.Claim.Namespace, "persistent_volume_name": persistentVolume.Name, "duration": "minute", "disk_type": persistentVolume.SpecStorageClassName, "cost_per_hour": fmt.Sprintf("%f", persistentVolume.CostPerGbHour), "claim_name": persistentVolume.Claim.Name, "disk_size": strconv.FormatInt(persistentVolume.Capacity, 10)})
+			removeFromList(persistentVolume)
 		case watch.Error:
 			glog.V(3).Infof("Error - PVC Name: %s", pv.Name)
+		}
+	}
+}
+
+func addToList(pv PersistentVolume) {
+	isInList := false
+
+	for _, v := range pvList.PersistentVolume {
+		if v.Name == pv.Name {
+			isInList = true
+		}
+	}
+
+	if !isInList {
+		pvList.PersistentVolume = append(pvList.PersistentVolume, pv)
+	}
+}
+
+func removeFromList(pv PersistentVolume) {
+	for index, v := range pvList.PersistentVolume {
+		if v.Name == pv.Name {
+			pvList.PersistentVolume[index] = pvList.PersistentVolume[len(pvList.PersistentVolume)-1]
+			pvList.PersistentVolume = pvList.PersistentVolume[:len(pvList.PersistentVolume)-1]
 		}
 	}
 }

@@ -226,20 +226,20 @@ func Watch(clientset *kubernetes.Clientset) {
 
 func addToListPodMetricList(podMetric PodMetric) {
 
-	isPodInList := false
+	isInList := false
 
 	for _, v := range podList.Pod {
 
 		if v.Namespace_name == podMetric.Namespace_name {
 			if v.Pod_name == podMetric.Pod_name {
 				if v.Container_name == podMetric.Container_name {
-					isPodInList = true
+					isInList = true
 				}
 			}
 		}
 	}
 
-	if !isPodInList {
+	if !isInList {
 		podList.Pod = append(podList.Pod, podMetric)
 	}
 }
