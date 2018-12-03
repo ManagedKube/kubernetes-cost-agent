@@ -92,15 +92,39 @@ func Watch(clientset *kubernetes.Clientset) {
 		switch event.Type {
 		case watch.Added:
 			glog.V(3).Infof("Added - Node Name: %s", node.Name)
-			nodeList.Node = append(nodeList.Node, node)
+			addToList(node)
 			NodeCostMetric.With(prometheus.Labels{"node_name": node.Name, "duration": "minute", "instance_type": node.InstanceType, "cost_per_hour": fmt.Sprintf("%f", node.ComputeCostPerHour)}).Add(node.ComputeCostPerHour / 60)
 		case watch.Modified:
 			glog.V(3).Infof("Modified - Node Name: %s", node.Name)
 		case watch.Deleted:
 			glog.V(3).Infof("Deleted - Node Name: %s", node.Name)
+			removeFromList(node)
 			NodeCostMetric.Delete(prometheus.Labels{"node_name": node.Name, "duration": "minute", "instance_type": node.InstanceType, "cost_per_hour": fmt.Sprintf("%f", node.ComputeCostPerHour)})
 		case watch.Error:
 			glog.V(3).Infof("Error - Node Name: %s", node.Name)
+		}
+	}
+}
+
+func addToList(node NodeInfo) {
+	isInList := false
+
+	for _, v := range nodeList.Node {
+		if v.Name == node.Name {
+			isInList = true
+		}
+	}
+
+	if !isInList {
+		nodeList.Node = append(nodeList.Node, node)
+	}
+}
+
+func removeFromList(node NodeInfo) {
+	for index, v := range nodeList.Node {
+		if v.Name == node.Name {
+			nodeList.Node[index] = nodeList.Node[len(nodeList.Node)-1]
+			nodeList.Node = nodeList.Node[:len(nodeList.Node)-1]
 		}
 	}
 }
