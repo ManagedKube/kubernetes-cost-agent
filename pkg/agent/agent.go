@@ -89,6 +89,8 @@ func send(bytesRepresentation []uint8) {
 		log.Fatalln(err)
 	}
 
+	defer resp.Body.Close()
+
 	var result map[string]interface{}
 
 	json.NewDecoder(resp.Body).Decode(&result)
