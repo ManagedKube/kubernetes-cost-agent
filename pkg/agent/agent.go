@@ -10,7 +10,7 @@ import (
 	k8sPod "managedkube.com/kubernetes-cost-agent/pkg/metrics/k8s/pod"
 )
 
-func Update(clientset *kubernetes.Clientset) {
+func Run(clientset *kubernetes.Clientset) {
 
 	k8sNode.Register()
 	k8sPod.Register()

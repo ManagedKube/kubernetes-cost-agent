@@ -38,7 +38,7 @@ func main() {
 		return
 	}
 
-	go agent.Update(clientset)
+	go agent.Run(clientset)
 
 	http.Handle("/metrics", promhttp.Handler())
 	http.ListenAndServe(":9101", nil)
