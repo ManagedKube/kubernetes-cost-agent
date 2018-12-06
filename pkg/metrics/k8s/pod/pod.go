@@ -14,6 +14,8 @@ import (
 	k8sNode "managedkube.com/kubernetes-cost-agent/pkg/metrics/k8s/node"
 )
 
+var podList PodMetricList
+
 var (
 	PodCostMetric = prometheus.NewCounterVec(prometheus.CounterOpts{
 		Name: "mk_pod_cost",
@@ -103,6 +105,12 @@ func Watch(clientset *kubernetes.Clientset) {
 				for _, c := range p.Spec.Containers {
 					glog.V(3).Infof("Found container: %s", c.Name)
 
+					var podMetric PodMetric
+					podMetric.Namespace_name = p.Namespace
+					podMetric.Pod_name = p.Name
+					podMetric.Container_name = c.Name
+					podMetric.Duration = "minute"
+
 					var cpuLimit int64 = c.Resources.Limits.Cpu().MilliValue()
 					var cpuRequest int64 = c.Resources.Requests.Cpu().MilliValue()
 					var memoryLimit int64 = c.Resources.Limits.Memory().Value()
@@ -127,12 +135,12 @@ func Watch(clientset *kubernetes.Clientset) {
 					// Calculate the cost of this container
 					podCost := cost.CalculatePodCost(nodeInfo, podUsageMemory, podUsageCpu)
 
-					PodCostMetric.With(prometheus.Labels{"namespace_name": p.Namespace, "pod_name": p.Name, "container_name": c.Name, "duration": "minute"}).Add(podCost.MinuteCpu + podCost.MinuteMemory)
+					podMetric.CostCPU = podCost.MinuteCpu
+					podMetric.CostMemory = podCost.MinuteMemory
 
-					// Update namespace cost
-					// k8sNamespace.Add(p.Namespace, podCost.MinuteCpu+podCost.MinuteMemory)
-					// k8sNamespace.Export()
+					PodCostMetric.With(prometheus.Labels{"namespace_name": podMetric.Namespace_name, "pod_name": podMetric.Pod_name, "container_name": podMetric.Container_name, "duration": podMetric.Duration}).Add(podCost.MinuteCpu + podCost.MinuteMemory)
 
+					addToListPodMetricList(podMetric)
 				}
 			}
 
@@ -147,6 +155,12 @@ func Watch(clientset *kubernetes.Clientset) {
 				for _, c := range p.Spec.Containers {
 					glog.V(3).Infof("Found container: %s", c.Name)
 
+					var podMetric PodMetric
+					podMetric.Namespace_name = p.Namespace
+					podMetric.Pod_name = p.Name
+					podMetric.Container_name = c.Name
+					podMetric.Duration = "minute"
+
 					var cpuLimit int64 = c.Resources.Limits.Cpu().MilliValue()
 					var cpuRequest int64 = c.Resources.Requests.Cpu().MilliValue()
 					var memoryLimit int64 = c.Resources.Limits.Memory().Value()
@@ -171,14 +185,15 @@ func Watch(clientset *kubernetes.Clientset) {
 					// Calculate the cost of this container
 					podCost := cost.CalculatePodCost(nodeInfo, podUsageMemory, podUsageCpu)
 
-					PodCostMetric.With(prometheus.Labels{"namespace_name": p.Namespace, "pod_name": p.Name, "container_name": c.Name, "duration": "minute"}).Add(podCost.MinuteCpu + podCost.MinuteMemory)
+					podMetric.CostCPU = podCost.MinuteCpu
+					podMetric.CostMemory = podCost.MinuteMemory
 
-					// Update namespace cost
-					// k8sNamespace.Add(p.Namespace, podCost.MinuteCpu+podCost.MinuteMemory)
-					// k8sNamespace.Export()
+					PodCostMetric.With(prometheus.Labels{"namespace_name": podMetric.Namespace_name, "pod_name": podMetric.Pod_name, "container_name": podMetric.Container_name, "duration": podMetric.Duration}).Add(podCost.MinuteCpu + podCost.MinuteMemory)
 
+					addToListPodMetricList(podMetric)
 				}
 			}
+
 		case watch.Deleted:
 			glog.V(3).Infof("Deleted - Pod Name: %s", p.Name)
 
@@ -190,12 +205,57 @@ func Watch(clientset *kubernetes.Clientset) {
 				for _, c := range p.Spec.Containers {
 					glog.V(3).Infof("Found container: %s", c.Name)
 
-					PodCostMetric.Delete(prometheus.Labels{"namespace_name": p.Namespace, "pod_name": p.Name, "container_name": c.Name, "duration": "minute"})
+					var podMetric PodMetric
+					podMetric.Namespace_name = p.Namespace
+					podMetric.Pod_name = p.Name
+					podMetric.Container_name = c.Name
+					podMetric.Duration = "minute"
+
+					//PodCostMetric.Delete(prometheus.Labels{"namespace_name": p.Namespace, "pod_name": p.Name, "container_name": c.Name, "duration": "minute"})
+					PodCostMetric.Delete(prometheus.Labels{"namespace_name": podMetric.Namespace_name, "pod_name": podMetric.Pod_name, "container_name": podMetric.Container_name, "duration": podMetric.Duration})
+
+					removeFromPodMetricList(podMetric)
 				}
 			}
 
 		case watch.Error:
 			glog.V(3).Infof("Error - Pod Name: %s", p.Name)
+		}
+	}
+}
+
+func addToListPodMetricList(podMetric PodMetric) {
+
+	isInList := false
+
+	for _, v := range podList.Pod {
+
+		if v.Namespace_name == podMetric.Namespace_name {
+			if v.Pod_name == podMetric.Pod_name {
+				if v.Container_name == podMetric.Container_name {
+					isInList = true
+				}
+			}
+		}
+	}
+
+	if !isInList {
+		podList.Pod = append(podList.Pod, podMetric)
+	}
+}
+
+func removeFromPodMetricList(podMetric PodMetric) {
+
+	for index, i := range podList.Pod {
+
+		if i.Namespace_name == podMetric.Namespace_name {
+			if i.Pod_name == podMetric.Pod_name {
+				if i.Container_name == podMetric.Container_name {
+					// Remove item
+					podList.Pod[index] = podList.Pod[len(podList.Pod)-1]
+					podList.Pod = podList.Pod[:len(podList.Pod)-1]
+				}
+			}
 		}
 	}
 }
