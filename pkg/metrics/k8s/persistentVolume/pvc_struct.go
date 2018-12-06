@@ -1,22 +1,22 @@
 package persistentVolume
 
 type PersistentVolume struct {
-	Name                 string
-	Capacity             int64
-	VolumeName           string
-	StatusPhase          string
-	SpecStorageClassName string
-	Claim                PersistentVolumeClaim
-	CostPerGbMonth       float64
-	CostPerGbHour        float64
+	Name                 string                `json:"name"`
+	Capacity             int64                 `json:"capacity"`
+	VolumeName           string                `json:"volumeName"`
+	StatusPhase          string                `json:"statusPhase"`
+	SpecStorageClassName string                `json:"specStorageClassName"`
+	Claim                PersistentVolumeClaim `json:"claim"`
+	CostPerGbMonth       float64               `json:"costPerGbMonth"`
+	CostPerGbHour        float64               `json:"costPerGbHour"`
 }
 
 type PersistentVolumeList struct {
-	PersistentVolume []PersistentVolume
+	PersistentVolume []PersistentVolume `json:"persistentVolume"`
 }
 
 type PersistentVolumeClaim struct {
-	Name      string
-	Namespace string
-	Kind      string
+	Name      string `json:"name"`
+	Namespace string `json:"namespace"`
+	Kind      string `json:"kind"`
 }
