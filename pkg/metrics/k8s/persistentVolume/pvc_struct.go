@@ -2,7 +2,6 @@ package persistentVolume
 
 type PersistentVolume struct {
 	Name                 string
-	ClusterName          string
 	Capacity             int64
 	VolumeName           string
 	StatusPhase          string

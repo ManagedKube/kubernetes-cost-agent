@@ -29,6 +29,10 @@ func Register() {
 	prometheus.MustRegister(NodeCostMetric)
 }
 
+func GetList() NodeList {
+	return nodeList
+}
+
 // From the node list return the NodeInfo which matches the nodeName
 func GetNodeInfo(nodeName string) (NodeInfo, error) {
 

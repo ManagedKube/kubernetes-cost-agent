@@ -2,7 +2,6 @@ package pod
 
 type PodMetric struct {
 	Namespace_name string
-	ClusterName    string
 	Pod_name       string
 	Container_name string
 	Duration       string

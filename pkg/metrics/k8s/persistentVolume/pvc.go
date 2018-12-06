@@ -31,6 +31,10 @@ func Register() {
 	prometheus.MustRegister(PersistentVolumeCostMetric)
 }
 
+func GetList() PersistentVolumeList {
+	return pvList
+}
+
 // func Get(clientset *kubernetes.Clientset) (PersistentVolumeList, error) {
 //
 // 	// Resetting
