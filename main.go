@@ -32,8 +32,16 @@ func main() {
 	if !ok {
 		glog.V(3).Infof("The EXPORT_TOKEN environment variable is not set")
 	} else {
-		glog.V(3).Infof("The EXPORT_TOKEN environment variable is set, using it as the export tokent")
+		glog.V(3).Infof("The EXPORT_TOKEN environment variable is set, using it as the export token")
 		agent.SetExportToken(exportToken)
+	}
+
+	clusterName, ok := os.LookupEnv("CLUSTER_NAME")
+	if !ok {
+		glog.V(3).Infof("The CLUSTER_NAME environment variable is not set")
+	} else {
+		glog.V(3).Infof("The CLUSTER_NAME environment variable is set to: %s", clusterName)
+		agent.SetClusterName(clusterName)
 	}
 
 	// send logs to stderr so we can use 'kubectl logs'

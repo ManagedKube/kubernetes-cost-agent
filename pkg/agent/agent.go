@@ -3,7 +3,6 @@ package agent
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"github.com/golang/glog"
 	"log"
 	"net/http"
@@ -16,8 +15,10 @@ import (
 	k8sPod "managedkube.com/kubernetes-cost-agent/pkg/metrics/k8s/pod"
 )
 
+var exportCycleSeconds time.Duration = 60
 var exportURL = ""
 var exportToken = ""
+var clusterName = ""
 
 func SetExportURL(url string){
 	exportURL = url
@@ -25,6 +26,10 @@ func SetExportURL(url string){
 
 func SetExportToken(token string){
 	exportToken = token
+}
+
+func SetClusterName(name string){
+	clusterName = name
 }
 
 func Run(clientset *kubernetes.Clientset) {
@@ -50,13 +55,15 @@ func export(){
 
 func update(){
 	for{
-		time.Sleep(10 * time.Second)
+		time.Sleep(exportCycleSeconds * time.Second)
 		glog.V(3).Infof("Sending exports")
 
 		podList := k8sPod.GetList()
 
 		for _, p := range podList.Pod {
-			fmt.Println(p.Container_name)
+
+			// Set cluster name
+			p.ClusterName = clusterName
 
 			bytesRepresentation, err := json.Marshal(p)
 			if err != nil {
@@ -70,11 +77,6 @@ func update(){
 }
 
 func send(bytesRepresentation []uint8) {
-
-	//resp, err := http.Post(exportURL, "application/json", bytes.NewBuffer(bytesRepresentation))
-	//if err != nil {
-	//	log.Fatalln(err)
-	//}
 
 	timeout := time.Duration(5 * time.Second)
 

@@ -2,6 +2,7 @@ package node
 
 type NodeInfo struct {
 	Name               string
+	ClusterName	       string
 	CpuCapacity        int64
 	MemoryCapacity     int64
 	ComputeCostPerHour float64
