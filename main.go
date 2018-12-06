@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"net/http"
-
 	"managedkube.com/kubernetes-cost-agent/pkg/agent"
+	"net/http"
+	"os"
 
 	"github.com/golang/glog"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -19,6 +19,22 @@ import (
 var kubeconfig = flag.String("kubeconfig", "", "Path to a kubeconfig file")
 
 func main() {
+
+	exportURL, ok := os.LookupEnv("EXPORT_URL")
+	if !ok {
+		glog.V(3).Infof("The EXPORT_URL environment variable is not set, not sending export data")
+	} else {
+		glog.V(3).Infof("The EXPORT_URL environment variable is set, sending exports to: %s", exportURL)
+		agent.SetExportURL(exportURL)
+	}
+
+	exportToken, ok := os.LookupEnv("EXPORT_TOKEN")
+	if !ok {
+		glog.V(3).Infof("The EXPORT_TOKEN environment variable is not set")
+	} else {
+		glog.V(3).Infof("The EXPORT_TOKEN environment variable is set, using it as the export tokent")
+		agent.SetExportToken(exportToken)
+	}
 
 	// send logs to stderr so we can use 'kubectl logs'
 	flag.Set("logtostderr", "true")

@@ -2,14 +2,13 @@ package node
 
 import (
 	"fmt"
-	"log"
-
 	"github.com/golang/glog"
 	"github.com/prometheus/client_golang/prometheus"
 	"k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes"
+	"log"
 	"managedkube.com/kubernetes-cost-agent/pkg/price"
 )
 
@@ -63,7 +62,10 @@ func Watch(clientset *kubernetes.Clientset) {
 
 	watcher, err := clientset.CoreV1().Nodes().Watch(metav1.ListOptions{TimeoutSeconds: &timeout})
 	if err != nil {
+		glog.V(3).Infof("Watch Error...")
 		log.Fatal(err)
+		//utilruntime.HandleError(err)
+		//os.Exit(3)
 	}
 
 	// Start channel to watch

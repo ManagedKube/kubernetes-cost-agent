@@ -38,6 +38,10 @@ func Register() {
 	prometheus.MustRegister(TotalNumberOfPods)
 }
 
+func GetList() PodMetricList {
+	return podList
+}
+
 // Get list of pods from the k8s API
 func GetAllPods(clientset *kubernetes.Clientset) (*v1.PodList, error) {
 
@@ -77,7 +81,10 @@ func Watch(clientset *kubernetes.Clientset) {
 
 	watcher, err := clientset.CoreV1().Pods("").Watch(listOptions)
 	if err != nil {
+		glog.V(3).Infof("Watch Error...")
 		log.Fatal(err)
+		//utilruntime.HandleError(err)
+		//os.Exit(3)
 	}
 
 	// Start channel to watch
