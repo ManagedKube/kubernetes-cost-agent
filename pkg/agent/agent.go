@@ -15,7 +15,7 @@ import (
 	k8sPod "managedkube.com/kubernetes-cost-agent/pkg/metrics/k8s/pod"
 )
 
-var exportCycleSeconds time.Duration = 60
+var exportCycleSeconds time.Duration = 10
 var exportURL = ""
 var exportToken = ""
 var clusterName = ""
@@ -89,12 +89,12 @@ func send(bytesRepresentation []uint8) {
 		log.Fatalln(err)
 	}
 
-	//var result map[string]interface{}
-	//
-	//json.NewDecoder(resp.Body).Decode(&result)
-	//
-	//log.Println(result)
-	//log.Println(result["data"])
+	var result map[string]interface{}
+
+	json.NewDecoder(resp.Body).Decode(&result)
+
+	log.Println(result)
+	log.Println(result["data"])
 
 	if resp.StatusCode != 200 {
 		glog.V(3).Infof("Error sending export to: %s, StatusCode: %s", exportURL, resp.Status)
@@ -107,10 +107,10 @@ func sendPods() {
 	for _, p := range podList.Pod {
 
 		data := struct {
-			ApiVersion string   `json:"apiVersion"`
-			Kind       string   `json:"kind"`
-			Metadata   metadata `json:"metadata"`
-			Spec       k8sPod.PodMetric
+			ApiVersion string           `json:"apiVersion"`
+			Kind       string           `json:"kind"`
+			Metadata   metadata         `json:"metadata"`
+			Spec       k8sPod.PodMetric `json:"spec"`
 		}{
 			ApiVersion: "managedkube/v1alpha1",
 			Kind:       "PodMetric",
@@ -139,10 +139,10 @@ func sendNodes() {
 	for _, n := range nodeList.Node {
 
 		data := struct {
-			ApiVersion string   `json:"apiVersion"`
-			Kind       string   `json:"kind"`
-			Metadata   metadata `json:"metadata"`
-			Spec       k8sNode.NodeInfo
+			ApiVersion string           `json:"apiVersion"`
+			Kind       string           `json:"kind"`
+			Metadata   metadata         `json:"metadata"`
+			Spec       k8sNode.NodeInfo `json:"spec"`
 		}{
 			ApiVersion: "managedkube/v1alpha1",
 			Kind:       "NodeMetric",
@@ -171,10 +171,10 @@ func sendPersistentDisk() {
 	for _, n := range pvList.PersistentVolume {
 
 		data := struct {
-			ApiVersion string   `json:"apiVersion"`
-			Kind       string   `json:"kind"`
-			Metadata   metadata `json:"metadata"`
-			Spec       k8sPersistentVolume.PersistentVolume
+			ApiVersion string                               `json:"apiVersion"`
+			Kind       string                               `json:"kind"`
+			Metadata   metadata                             `json:"metadata"`
+			Spec       k8sPersistentVolume.PersistentVolume `json:"spec"`
 		}{
 			ApiVersion: "managedkube/v1alpha1",
 			Kind:       "PersistentVolumeeMetric",
