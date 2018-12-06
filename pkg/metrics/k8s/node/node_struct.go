@@ -1,16 +1,16 @@
 package node
 
 type NodeInfo struct {
-	Name               string
-	CpuCapacity        int64
-	MemoryCapacity     int64
-	ComputeCostPerHour float64
-	Region             string
-	Zone               string
-	InstanceType       string
-	ReduceCostInstance string
+	Name               string  `json:"name"`
+	CpuCapacity        int64   `json:"cpuCapacity"`
+	MemoryCapacity     int64   `json:"memoryCapacity"`
+	ComputeCostPerHour float64 `json:"computeCostPerHour"`
+	Region             string  `json:"region"`
+	Zone               string  `json:"zone"`
+	InstanceType       string  `json:"instanceType"`
+	ReduceCostInstance string  `json:"reduceCostInstance"`
 }
 
 type NodeList struct {
-	Node []NodeInfo
+	Node []NodeInfo `json:"node"`
 }
