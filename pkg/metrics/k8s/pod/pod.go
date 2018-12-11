@@ -109,14 +109,16 @@ func Watch(clientset *kubernetes.Clientset) {
 				//fmt.Println(reflect.TypeOf(p))
 				glog.V(3).Infof("Found pods: %s/%s/%s/%s", p.Namespace, p.Name, p.UID, p.Spec.NodeName)
 
+				var podMetric PodMetric
+				podMetric.Namespace_name = p.Namespace
+				podMetric.Pod_name = p.Name
+				podMetric.Duration = "minute"
+				podMetric.Labels = p.ObjectMeta.Labels
+
 				for _, c := range p.Spec.Containers {
 					glog.V(3).Infof("Found container: %s", c.Name)
 
-					var podMetric PodMetric
-					podMetric.Namespace_name = p.Namespace
-					podMetric.Pod_name = p.Name
 					podMetric.Container_name = c.Name
-					podMetric.Duration = "minute"
 
 					var cpuLimit int64 = c.Resources.Limits.Cpu().MilliValue()
 					var cpuRequest int64 = c.Resources.Requests.Cpu().MilliValue()
@@ -145,7 +147,7 @@ func Watch(clientset *kubernetes.Clientset) {
 					podMetric.CostCPU = podCost.MinuteCpu
 					podMetric.CostMemory = podCost.MinuteMemory
 
-					PodCostMetric.With(prometheus.Labels{"namespace_name": podMetric.Namespace_name, "pod_name": podMetric.Pod_name, "container_name": podMetric.Container_name, "duration": podMetric.Duration}).Add(podCost.MinuteCpu + podCost.MinuteMemory)
+					PodCostMetric.With(prometheus.Labels{"namespace_name": podMetric.Namespace_name, "pod_name": podMetric.Pod_name, "container_name": podMetric.Container_name, "duration": podMetric.Duration, "foo": "bar"}).Add(podCost.MinuteCpu + podCost.MinuteMemory)
 
 					addToListPodMetricList(podMetric)
 				}

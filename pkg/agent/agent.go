@@ -15,7 +15,7 @@ import (
 	k8sPod "managedkube.com/kubernetes-cost-agent/pkg/metrics/k8s/pod"
 )
 
-var exportCycleSeconds time.Duration = 60
+var exportCycleSeconds time.Duration = 10
 var exportURL = ""
 var exportToken = ""
 var clusterName = ""
@@ -91,12 +91,12 @@ func send(bytesRepresentation []uint8) {
 
 	defer resp.Body.Close()
 
-	//var result map[string]interface{}
-	//
-	//json.NewDecoder(resp.Body).Decode(&result)
-	//
-	//log.Println(result)
-	//log.Println(result["data"])
+	var result map[string]interface{}
+
+	json.NewDecoder(resp.Body).Decode(&result)
+
+	log.Println(result)
+	log.Println(result["data"])
 
 	if resp.StatusCode != 200 {
 		glog.V(3).Infof("Error sending export to: %s, StatusCode: %s", exportURL, resp.Status)
