@@ -134,12 +134,7 @@ func sendPods() {
 
 	for _, p := range podList.Pod {
 
-		data := struct {
-			ApiVersion string           `json:"apiVersion"`
-			Kind       string           `json:"kind"`
-			Metadata   metadata         `json:"metadata"`
-			Spec       k8sPod.PodMetric `json:"spec"`
-		}{
+		data := PodExport{
 			ApiVersion: "managedkube/v1alpha1",
 			Kind:       "PodMetric",
 			Metadata: metadata{
@@ -166,12 +161,7 @@ func sendNodes() {
 
 	for _, n := range nodeList.Node {
 
-		data := struct {
-			ApiVersion string           `json:"apiVersion"`
-			Kind       string           `json:"kind"`
-			Metadata   metadata         `json:"metadata"`
-			Spec       k8sNode.NodeInfo `json:"spec"`
-		}{
+		data := NodeExport{
 			ApiVersion: "managedkube/v1alpha1",
 			Kind:       "NodeMetric",
 			Metadata: metadata{
@@ -198,12 +188,7 @@ func sendPersistentDisk() {
 
 	for _, n := range pvList.PersistentVolume {
 
-		data := struct {
-			ApiVersion string                               `json:"apiVersion"`
-			Kind       string                               `json:"kind"`
-			Metadata   metadata                             `json:"metadata"`
-			Spec       k8sPersistentVolume.PersistentVolume `json:"spec"`
-		}{
+		data := PersistentDiskExport{
 			ApiVersion: "managedkube/v1alpha1",
 			Kind:       "PersistentVolumeeMetric",
 			Metadata: metadata{
