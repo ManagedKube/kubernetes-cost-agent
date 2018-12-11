@@ -147,7 +147,7 @@ func Watch(clientset *kubernetes.Clientset) {
 					podMetric.CostCPU = podCost.MinuteCpu
 					podMetric.CostMemory = podCost.MinuteMemory
 
-					PodCostMetric.With(prometheus.Labels{"namespace_name": podMetric.Namespace_name, "pod_name": podMetric.Pod_name, "container_name": podMetric.Container_name, "duration": podMetric.Duration, "foo": "bar"}).Add(podCost.MinuteCpu + podCost.MinuteMemory)
+					PodCostMetric.With(prometheus.Labels{"namespace_name": podMetric.Namespace_name, "pod_name": podMetric.Pod_name, "container_name": podMetric.Container_name, "duration": podMetric.Duration}).Add(podCost.MinuteCpu + podCost.MinuteMemory)
 
 					addToListPodMetricList(podMetric)
 				}
@@ -220,7 +220,6 @@ func Watch(clientset *kubernetes.Clientset) {
 					podMetric.Container_name = c.Name
 					podMetric.Duration = "minute"
 
-					//PodCostMetric.Delete(prometheus.Labels{"namespace_name": p.Namespace, "pod_name": p.Name, "container_name": c.Name, "duration": "minute"})
 					PodCostMetric.Delete(prometheus.Labels{"namespace_name": podMetric.Namespace_name, "pod_name": podMetric.Pod_name, "container_name": podMetric.Container_name, "duration": podMetric.Duration})
 
 					removeFromPodMetricList(podMetric)
