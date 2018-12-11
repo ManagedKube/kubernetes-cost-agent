@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/golang/glog"
+	"github.com/prometheus/client_golang/prometheus"
 	"log"
 	"net/http"
 	"time"
@@ -15,10 +16,20 @@ import (
 	k8sPod "managedkube.com/kubernetes-cost-agent/pkg/metrics/k8s/pod"
 )
 
+var AgentVersion = "1.1"
 var exportCycleSeconds time.Duration = 60
 var exportURL = ""
 var exportToken = ""
 var clusterName = ""
+
+var (
+	AppVersionPrometheus = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Name: "mk_agent_build_info",
+		Help: "ManagedKube - Build information",
+	},
+		[]string{"version"},
+	)
+)
 
 type labels struct {
 	ClusterName string `json:"clusterName"`
@@ -42,8 +53,23 @@ func SetClusterName(name string) {
 	clusterName = name
 }
 
+// Registers the Prometheus metrics
+func register() {
+	// Metrics have to be registered to be exposed:
+	prometheus.MustRegister(AppVersionPrometheus)
+}
+
+func setVersion() {
+
+	AppVersionPrometheus.With(prometheus.Labels{"version": AgentVersion}).Set(1)
+}
+
 func Run(clientset *kubernetes.Clientset) {
 
+	glog.V(3).Infof("ManagedKube Agent version %s", AgentVersion)
+
+	register()
+	setVersion()
 	k8sNode.Register()
 	k8sPod.Register()
 	k8sPersistentVolume.Register()
