@@ -109,7 +109,8 @@ func send(bytesRepresentation []uint8) {
 	}
 
 	req, err := http.NewRequest("POST", exportURL, bytes.NewBuffer(bytesRepresentation))
-	req.Header.Add("Apikey", exportToken)
+	req.Header.Set("Apikey", exportToken)
+	req.Header.Set("Content-Type", "application/json")
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Fatalln(err)
