@@ -92,7 +92,7 @@ func update() {
 
 func send(urlPath string, bytesRepresentation []uint8) {
 
-	timeout := time.Duration(5 * time.Second)
+	timeout := time.Duration(30 * time.Second)
 
 	client := &http.Client{
 		Timeout: timeout,
