@@ -17,7 +17,7 @@ import (
 )
 
 var AgentVersion = "1.1"
-var exportCycleSeconds time.Duration = 60
+var exportCycleSeconds time.Duration = 10
 var exportURL = ""
 var exportToken = ""
 var clusterName = ""
@@ -30,16 +30,6 @@ var (
 		[]string{"version"},
 	)
 )
-
-type labels struct {
-	ClusterName string `json:"clusterName"`
-}
-
-type metadata struct {
-	Name      string `json:"name"`
-	Namespace string `json:"namespace"`
-	Labels    labels `json:"labels"`
-}
 
 func SetExportURL(url string) {
 	exportURL = url
@@ -100,15 +90,15 @@ func update() {
 	}
 }
 
-func send(bytesRepresentation []uint8) {
+func send(urlPath string, bytesRepresentation []uint8) {
 
-	timeout := time.Duration(5 * time.Second)
+	timeout := time.Duration(30 * time.Second)
 
 	client := &http.Client{
 		Timeout: timeout,
 	}
 
-	req, err := http.NewRequest("POST", exportURL, bytes.NewBuffer(bytesRepresentation))
+	req, err := http.NewRequest("POST", exportURL+urlPath, bytes.NewBuffer(bytesRepresentation))
 	req.Header.Set("Apikey", exportToken)
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := client.Do(req)
@@ -118,12 +108,12 @@ func send(bytesRepresentation []uint8) {
 
 	defer resp.Body.Close()
 
-	//var result map[string]interface{}
-	//
-	//json.NewDecoder(resp.Body).Decode(&result)
-	//
-	//log.Println(result)
-	//log.Println(result["data"])
+	var result map[string]interface{}
+
+	json.NewDecoder(resp.Body).Decode(&result)
+
+	log.Println(result)
+	log.Println(result["data"])
 
 	if resp.StatusCode != 200 {
 		glog.V(3).Infof("Error sending export to: %s, StatusCode: %s", exportURL, resp.Status)
@@ -138,10 +128,10 @@ func sendPods() {
 		data := PodExport{
 			ApiVersion: "managedkube/v1alpha1",
 			Kind:       "PodMetric",
-			Metadata: metadata{
+			Metadata: Metadata{
 				Name:      clusterName,
 				Namespace: p.Namespace_name,
-				Labels: labels{
+				Labels: Labels{
 					ClusterName: clusterName,
 				},
 			},
@@ -153,7 +143,8 @@ func sendPods() {
 			log.Fatalln(err)
 		}
 
-		go send(bytesRepresentation)
+		go send("/exports/pods", bytesRepresentation)
+		//go send("", bytesRepresentation)
 	}
 }
 
@@ -165,10 +156,10 @@ func sendNodes() {
 		data := NodeExport{
 			ApiVersion: "managedkube/v1alpha1",
 			Kind:       "NodeMetric",
-			Metadata: metadata{
+			Metadata: Metadata{
 				Name:      clusterName,
 				Namespace: "",
-				Labels: labels{
+				Labels: Labels{
 					ClusterName: clusterName,
 				},
 			},
@@ -180,7 +171,7 @@ func sendNodes() {
 			log.Fatalln(err)
 		}
 
-		go send(bytesRepresentation)
+		go send("/exports/nodes", bytesRepresentation)
 	}
 }
 
@@ -192,10 +183,10 @@ func sendPersistentDisk() {
 		data := PersistentDiskExport{
 			ApiVersion: "managedkube/v1alpha1",
 			Kind:       "PersistentVolumeeMetric",
-			Metadata: metadata{
+			Metadata: Metadata{
 				Name:      clusterName,
 				Namespace: n.Claim.Namespace,
-				Labels: labels{
+				Labels: Labels{
 					ClusterName: clusterName,
 				},
 			},
@@ -207,6 +198,6 @@ func sendPersistentDisk() {
 			log.Fatalln(err)
 		}
 
-		go send(bytesRepresentation)
+		go send("/exports/persistentvolumes", bytesRepresentation)
 	}
 }
